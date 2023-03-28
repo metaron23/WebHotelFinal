@@ -1,12 +1,14 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.WebUtilities;
+using System.Security.Claims;
+using System.Web;
 using WebHotel.Data;
 using WebHotel.Model;
 using WebHotel.Model.Authentication;
 using WebHotel.Models;
 using WebHotel.Repository.EmailRepository;
 using WebHotel.Repository.TokenRepository;
-using System.Security.Claims;
 
 namespace WebHotel.Repository.AuthenRepository
 {
@@ -152,8 +154,7 @@ namespace WebHotel.Repository.AuthenRepository
                 Name = model.Name!,
                 PhoneNumber = model.PhoneNumber
             };
-            user.EmailConfirmed = true;
-            // create a user here
+
             var result = await _userManager.CreateAsync(user, model.Password!);
 
             if (!result.Succeeded)
@@ -171,22 +172,26 @@ namespace WebHotel.Repository.AuthenRepository
                 await _userManager.AddToRoleAsync(user, UserRoles.User);
             }
 
-            status.StatusCode = 1;
-            status.Message = "Tạo mới thành công";
+            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            string codeHtmlVersion = HttpUtility.UrlEncode(code);
 
+            string callbackUrl = "https://localhost:7062/api/Authorization/ConfirmEmailRegiste?email=" +
+                user.Email + "&code=" + codeHtmlVersion;
 
-            //string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            //string codeHtmlVersion = HttpUtility.UrlEncode(code);
-
-            //string callbackUrl = "https://localhost:7075/api/Authorization/ConfirmEmailRegiste?email=" +
-            //    user.Email + "&code=" + codeHtmlVersion;
-
-            //_mailRepository.Email(new EmailRequest
-            //{
-            //    To = user.Email,
-            //    Subject = "Mail confim registed",
-            //    Body = "<a href=\"" + callbackUrl + "\">Link Confim</a>"
-            //});
+            if (_mailRepository.Email(new EmailRequest
+            {
+                To = user.Email,
+                Subject = "Mail confim registed",
+                Body = "<a href=\"" + callbackUrl + "\">Link Confim</a>"
+            }))
+            {
+                status.StatusCode = 1;
+                status.Message = "Tạo mới thành công. Vui lòng kiểm tra email để kích hoạt tài khoản!";
+            }
+            else {
+                status.StatusCode = 0;
+                status.Message = "Tạo mới thành công, nhưng gửi mail thất bại";
+            }
 
             return status;
         }
@@ -279,27 +284,33 @@ namespace WebHotel.Repository.AuthenRepository
             return status;
         }
 
-        public async Task<ChangePasswordResponse> RequestChangePassword(string? email)
+        public async Task<Status> RequestChangePassword(ForgotPasswordModel forgotPasswordModel)
         {
-            var user = await _userManager.FindByEmailAsync(email);
+            var user = await _userManager.FindByEmailAsync(forgotPasswordModel.Email!);
             if (user is null)
             {
-                return new ChangePasswordResponse { StatusCode = 0, Message = "Email not found" };
+                return new Status { StatusCode = 0, Message = "Email not found" };
             }
             string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            var param = new Dictionary<string, string?>
+            {
+                {"token", token },
+                {"email", forgotPasswordModel.Email }
+            };
+            var callback = QueryHelpers.AddQueryString(forgotPasswordModel.ClientURI!, param);
             _mailRepository.Email(new EmailRequest
             {
                 To = user.Email,
                 Subject = "Mail confim change pass",
-                Body = "Change password link: <a href=\"https://localhost:7075/api/Authorization/ConfirmChangePassword?code" + token + "&email = " + email + "\">Click Confirm</a>"
+                Body = "Change password link: <a href=\""+callback+ "\">Click Confirm</a>"
             });
-            return new ChangePasswordResponse { StatusCode = 1, Message = "Please check mail to change pass", Token = token };
+            return new Status { StatusCode = 1, Message = "Please check mail to change pass"};
         }
 
-        public async Task<Status> ConfirmChangePassword(string? code, string? email, ChangePasswordModel changePasswordModel)
+        public async Task<Status> ConfirmChangePassword(string? code, string? email, ResetPasswordModel resetPasswordModel)
         {
             var user = await _userManager.FindByEmailAsync(email);
-            var check = await _userManager.ResetPasswordAsync(user, code, changePasswordModel.NewPassword);
+            var check = await _userManager.ResetPasswordAsync(user, code, resetPasswordModel.NewPassword);
             if (check.Succeeded)
             {
                 return new Status { StatusCode = 1, Message = "Change pass successfull" };

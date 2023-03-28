@@ -20,10 +20,10 @@ builder.Services.AddCors(options =>
                       });
 });
 #endregion
-#region Master
+
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
-#endregion
+
 #region DB Context
 builder.Services.AddDbContext<MyDBContext>(options =>
         options.UseSqlServer(builder.Configuration.GetConnectionString("defaultConnection")));

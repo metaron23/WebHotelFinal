@@ -16,7 +16,7 @@ namespace WebHotel.Repository.AuthenRepository
         Task<bool> ConfirmEmailRegiste(string email, string code);
         // Confirm successful change pass
         Task<Status> RequestResetPassword(string? email);
-        Task<ChangePasswordResponse> RequestChangePassword(string? email);
-        Task<Status> ConfirmChangePassword(string? code, string? email, ChangePasswordModel changePasswordModel);
+        Task<Status> RequestChangePassword(ForgotPasswordModel forgotPasswordModel);
+        Task<Status> ConfirmChangePassword(string? code, string? email, ResetPasswordModel resetPasswordModel);
     }
 }

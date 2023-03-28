@@ -1,13 +1,13 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.IdentityModel.Tokens;
-using WebHotel.Data;
-using WebHotel.Model;
-using WebHotel.Model.Token;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Security.Cryptography;
 using System.Text;
+using WebHotel.Data;
+using WebHotel.Model;
+using WebHotel.Model.Token;
 
 namespace WebHotel.Repository.TokenRepository
 {
@@ -72,7 +72,7 @@ namespace WebHotel.Repository.TokenRepository
                 audience: _configuration["JWT:ValidAudience"],
                 expires: DateTime.Now.AddMinutes(1),
                 claims: claim,
-                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
+                signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)                
                 );
 
             string tokenString = new JwtSecurityTokenHandler().WriteToken(token);

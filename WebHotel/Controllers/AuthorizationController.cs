@@ -9,7 +9,6 @@ namespace WebHotel.Controllers
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
-    [Authorize]
     public class AuthorizationController : ControllerBase
     {
         private readonly IAuthenRepository _authenRepository;
@@ -67,9 +66,13 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
+        [AllowAnonymous]
         public IActionResult sendMail(EmailRequest emailRequest)
         {
-            _mailRepository.Email(emailRequest);
+            if (!_mailRepository.Email(emailRequest))
+            {
+                return BadRequest();
+            }
             return Ok();
         }
 
@@ -79,15 +82,16 @@ namespace WebHotel.Controllers
             return Ok(await _authenRepository.ConfirmEmailRegiste(email, code));
         }
 
-        [HttpGet]
-        public async Task<IActionResult> RequestChangePassword(string? email)
+        [HttpPost]
+        public async Task<IActionResult> RequestChangePassword(ForgotPasswordModel forgotPasswordModel)
         {
-            return Ok(await _authenRepository.RequestChangePassword(email));
+            return Ok(await _authenRepository.RequestChangePassword(forgotPasswordModel));
         }
         [HttpPost]
-        public async Task<IActionResult> ConfirmChangePassword(string? code, string? email, ChangePasswordModel changePasswordModel)
+        [AllowAnonymous]
+        public async Task<IActionResult> ConfirmChangePassword(ResetPasswordModel resetPasswordModel)
         {
-            return Ok(await _authenRepository.ConfirmChangePassword(code, email, changePasswordModel));
+            return Ok(await _authenRepository.ConfirmChangePassword(resetPasswordModel));
         }
     }
 }
