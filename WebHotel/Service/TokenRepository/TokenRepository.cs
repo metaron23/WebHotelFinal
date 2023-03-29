@@ -71,7 +71,7 @@ namespace WebHotel.Service.TokenRepository
             var token = new JwtSecurityToken(
                 issuer: _configuration["JWT:ValidIssuer"],
                 audience: _configuration["JWT:ValidAudience"],
-                expires: DateTime.Now.AddMinutes(1),
+                expires: DateTime.Now.AddHours(12),
                 claims: claim,
                 signingCredentials: new SigningCredentials(authSigningKey, SecurityAlgorithms.HmacSha256)
                 );
@@ -106,7 +106,7 @@ namespace WebHotel.Service.TokenRepository
 
             var newRefreshToken = GetRefreshToken();
             user.RefreshToken = newRefreshToken;
-            user.RefreshTokenExpiry = DateTime.Now.AddMinutes(5);
+            user.RefreshTokenExpiry = DateTime.Now.AddDays(1);
             _context.SaveChanges();
 
             tokenResponse.RefreshToken = newRefreshToken;

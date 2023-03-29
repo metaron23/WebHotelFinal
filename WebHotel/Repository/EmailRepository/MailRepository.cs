@@ -18,7 +18,7 @@ namespace WebHotel.Repository.EmailRepository
         {
             var check = true;
             var email = new MimeMessage();
-            email.From.Add(MailboxAddress.Parse(_configuration["AppSettings:EmailFrom"]));
+            email.From.Add(MailboxAddress.Parse(_configuration["EmailSettings:EmailFrom"]));
             email.To.Add(MailboxAddress.Parse(mailRequest.To));
             email.Subject = mailRequest.Subject;
             email.Body = new TextPart(TextFormat.Html)
@@ -28,16 +28,17 @@ namespace WebHotel.Repository.EmailRepository
             using var smtp = new SmtpClient();
             try
             {
-                smtp.Connect(_configuration["AppSettings:SmtpHost"], 465, SecureSocketOptions.StartTls);
-                smtp.Authenticate(_configuration["AppSettings:SmtpUser"], _configuration["AppSettings:SmtpPass"]);
-                smtp.Send(email);                
-            }catch
+                smtp.Connect(_configuration["EmailSettings:SmtpHost"], 465, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_configuration["EmailSettings:SmtpUser"], _configuration["EmailSettings:SmtpPass"]);
+                smtp.Send(email);
+            }
+            catch
             {
                 check = false;
             }
             finally
             {
-                smtp.Disconnect(true);                
+                smtp.Disconnect(true);
             }
             return check;
         }

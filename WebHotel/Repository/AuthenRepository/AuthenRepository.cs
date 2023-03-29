@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
-using System.Web;
 using WebHotel.Commom;
 using WebHotel.Data;
 using WebHotel.DTO;
@@ -22,13 +21,15 @@ namespace WebHotel.Repository.AuthenRepository
         private readonly ITokenRepository _tokenService;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly IMailRepository _mailRepository;
+        private readonly IConfiguration _configuration;
 
         public AuthenRepository(MyDBContext context,
             UserManager<ApplicationUser> userManager,
             RoleManager<IdentityRole> roleManager,
             ITokenRepository tokenService,
             SignInManager<ApplicationUser> signInManager,
-            IMailRepository mailRepository
+            IMailRepository mailRepository,
+            IConfiguration configuration
             )
         {
             _context = context;
@@ -37,6 +38,7 @@ namespace WebHotel.Repository.AuthenRepository
             _tokenService = tokenService;
             _signInManager = signInManager;
             _mailRepository = mailRepository;
+            _configuration = configuration;
         }
 
         public async Task<object> Login([FromBody] LoginDto model)
@@ -82,14 +84,14 @@ namespace WebHotel.Repository.AuthenRepository
                         {
                             Usename = user.UserName,
                             RefreshToken = refreshToken,
-                            RefreshTokenExpiry = DateTime.Now.AddMinutes(5)
+                            RefreshTokenExpiry = DateTime.Now.AddDays(1)
                         };
                         _context.TokenInfos.Add(info);
                     }
                     else
                     {
                         tokenInfo.RefreshToken = refreshToken;
-                        tokenInfo.RefreshTokenExpiry = DateTime.Now.AddMinutes(5);
+                        tokenInfo.RefreshTokenExpiry = DateTime.Now.AddDays(1);
                     }
                     try
                     {
@@ -175,16 +177,20 @@ namespace WebHotel.Repository.AuthenRepository
             }
 
             string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
-            string codeHtmlVersion = HttpUtility.UrlEncode(code);
 
-            string callbackUrl = "https://localhost:7062/api/Authorization/ConfirmEmailRegiste?email=" +
-                user.Email + "&code=" + codeHtmlVersion;
+            var param = new Dictionary<string, string?>
+            {
+                {"email", model.Email },
+                {"code", code }
+
+            };
+            string callBack = QueryHelpers.AddQueryString(_configuration.GetSection("URL_HOST").ToString()!, param);
 
             if (_mailRepository.Email(new EmailRequestDto
             {
                 To = user.Email,
                 Subject = "Mail confim registed",
-                Body = "<a href=\"" + callbackUrl + "\">Link Confim</a>"
+                Body = "<a href=\"" + callBack + "\">Link Confim</a>"
             }))
             {
                 status.StatusCode = 1;
@@ -306,12 +312,12 @@ namespace WebHotel.Repository.AuthenRepository
                 {"token", token },
                 {"email", forgotPasswordModel.Email }
             };
-            var callback = QueryHelpers.AddQueryString(forgotPasswordModel.ClientURI!, param);
+            var callBack = QueryHelpers.AddQueryString(forgotPasswordModel.ClientURI!, param);
             _mailRepository.Email(new EmailRequestDto
             {
                 To = user.Email,
                 Subject = "Mail confim change pass",
-                Body = "Change password link: <a href=\"" + callback + "\">Click Confirm</a>"
+                Body = "Change password link: <a href=\"" + callBack + "\">Click Confirm</a>"
             });
             return new StatusDto { StatusCode = 1, Message = "Please check mail to change pass" };
         }
