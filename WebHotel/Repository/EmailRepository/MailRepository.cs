@@ -2,7 +2,7 @@
 using MailKit.Security;
 using MimeKit;
 using MimeKit.Text;
-using WebHotel.Model;
+using WebHotel.DTO;
 
 namespace WebHotel.Repository.EmailRepository
 {
@@ -14,7 +14,7 @@ namespace WebHotel.Repository.EmailRepository
         {
             _configuration = configuration;
         }
-        public bool Email(EmailRequest mailRequest)
+        public bool Email(EmailRequestDto mailRequest)
         {
             var check = true;
             var email = new MimeMessage();

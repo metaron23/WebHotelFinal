@@ -1,9 +1,9 @@
-﻿using WebHotel.Model;
+﻿using WebHotel.DTO;
 
 namespace WebHotel.Repository.EmailRepository
 {
     public interface IMailRepository
     {
-        bool Email(EmailRequest mailRequest);
+        bool Email(EmailRequestDto mailRequest);
     }
 }

@@ -1,8 +1,6 @@
-﻿using Microsoft.AspNetCore.SignalR;
-using WebHotel.Repository.AuthenRepository;
+﻿using WebHotel.Repository.AuthenRepository;
 using WebHotel.Repository.EmailRepository;
-using WebHotel.Repository.NotifiHub;
-using WebHotel.Repository.TokenRepository;
+using WebHotel.Service.TokenRepository;
 
 namespace WebHotel.Startup
 {

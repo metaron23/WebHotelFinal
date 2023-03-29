@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using WebHotel.Model;
-using WebHotel.Model.Token;
-using WebHotel.Repository.TokenRepository;
+using WebHotel.DTO;
+using WebHotel.DTO.Token;
+using WebHotel.Service.TokenRepository;
 
 namespace WebHotel.Controllers
 {
@@ -17,10 +17,10 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
-        public IActionResult Refresh(TokenRequest tokenRequest)
+        public IActionResult Refresh(TokenRequestDto tokenRequest)
         {
             var token = _service.RefreshToken(tokenRequest);
-            if (token is Status)
+            if (token is StatusDto)
             {
                 return BadRequest(token);
             }
@@ -28,7 +28,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
-        public IActionResult Revoke(TokenRequest tokenRequest)
+        public IActionResult Revoke(TokenRequestDto tokenRequest)
         {
             bool check = _service.Revoke(tokenRequest);
             if (!check)

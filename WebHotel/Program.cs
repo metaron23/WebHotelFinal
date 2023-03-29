@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Http.Connections;
 using Microsoft.EntityFrameworkCore;
 using System.Net;
 using WebHotel.Data;
-using WebHotel.Repository.NotifiHub;
+using WebHotel.Service.NotifiHub;
 using WebHotel.Startup;
 
 var MyAllowSpecificOrigins = "_myAllowSpecificOrigins";
@@ -53,8 +53,7 @@ app.UseFileServer();
 #region Cors
 app.UseCors(MyAllowSpecificOrigins);
 #endregion
-#region SignalR Hub
-#endregion
+
 #region Master
 app.MapHub<ChatHub>("hub");
 app.UseAuthentication();

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using WebHotel.Model.Token;
+using WebHotel.DTO.Token;
 
 namespace WebHotel.Helper
 {
@@ -7,7 +7,7 @@ namespace WebHotel.Helper
     {
         public ApplicationMapper()
         {
-            CreateMap<TokenRequest, TokenResponse>().ReverseMap();
+            CreateMap<TokenRequestDto, TokenResponseDto>().ReverseMap();
         }
     }
 }

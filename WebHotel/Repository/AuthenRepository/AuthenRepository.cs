@@ -1,14 +1,16 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 using System.Web;
+using WebHotel.Commom;
 using WebHotel.Data;
+using WebHotel.DTO;
+using WebHotel.DTO.Authentication;
 using WebHotel.Model;
-using WebHotel.Model.Authentication;
-using WebHotel.Models;
 using WebHotel.Repository.EmailRepository;
-using WebHotel.Repository.TokenRepository;
+using WebHotel.Service.TokenRepository;
 
 namespace WebHotel.Repository.AuthenRepository
 {
@@ -37,7 +39,7 @@ namespace WebHotel.Repository.AuthenRepository
             _mailRepository = mailRepository;
         }
 
-        public async Task<object> Login([FromBody] LoginModel model)
+        public async Task<object> Login([FromBody] LoginDto model)
         {
             var user = await _userManager.FindByEmailAsync(model.Email!);
 
@@ -46,7 +48,7 @@ namespace WebHotel.Repository.AuthenRepository
                 if (user.LockoutEnd >= DateTime.Now)
                 {
                     return
-                    new Status
+                    new StatusDto
                     {
                         StatusCode = 0,
                         Message = "Tài khoản đã bị khoá vì nhập sai 3 lần! Thời gian mở khoá là: " + user.LockoutEnd.Value.AddHours(7),
@@ -60,9 +62,9 @@ namespace WebHotel.Repository.AuthenRepository
 
                     var authClaims = new List<Claim>
                 {
-                    new Claim("UserName", user.UserName!),
-                    new Claim("Email", user.Email!),
-                    new Claim("Id", Guid.NewGuid().ToString()),
+                    new Claim(ClaimTypes.Name, user.UserName!),
+                    new Claim(ClaimTypes.Email, user.Email!),
+                    new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
                 };
 
                     foreach (var userRole in userRoles)
@@ -95,14 +97,14 @@ namespace WebHotel.Repository.AuthenRepository
                     }
                     catch (Exception ex)
                     {
-                        return new Status
+                        return new StatusDto
                         {
                             StatusCode = 0,
                             Message = ex.Message,
                         };
                     }
 
-                    return new LoginResponse
+                    return new LoginResponseDto
                     {
                         AccessToken = token.TokenString,
                         RefreshToken = refreshToken,
@@ -113,16 +115,16 @@ namespace WebHotel.Repository.AuthenRepository
                     await _userManager.AccessFailedAsync(user);
                 }
             }
-            return new Status
+            return new StatusDto
             {
                 StatusCode = 0,
                 Message = "Sai email hoặc mật khẩu!",
             };
         }
 
-        public async Task<Status> Registration([FromBody] RegistrationModel model)
+        public async Task<StatusDto> Registration([FromBody] RegistrationDto model)
         {
-            var status = new Status();
+            var status = new StatusDto();
             if (!ModelState.IsValid)
             {
                 status.StatusCode = 0;
@@ -130,8 +132,8 @@ namespace WebHotel.Repository.AuthenRepository
                 return status;
             }
             // check if user exists
-            var userExistsEmail = await _userManager.FindByEmailAsync(model.Email);
-            var userExistsUserName = await _userManager.FindByNameAsync(model.UserName);
+            var userExistsEmail = await _userManager.FindByEmailAsync(model.Email!);
+            var userExistsUserName = await _userManager.FindByNameAsync(model.UserName!);
 
             if (userExistsEmail != null)
             {
@@ -178,7 +180,7 @@ namespace WebHotel.Repository.AuthenRepository
             string callbackUrl = "https://localhost:7062/api/Authorization/ConfirmEmailRegiste?email=" +
                 user.Email + "&code=" + codeHtmlVersion;
 
-            if (_mailRepository.Email(new EmailRequest
+            if (_mailRepository.Email(new EmailRequestDto
             {
                 To = user.Email,
                 Subject = "Mail confim registed",
@@ -188,7 +190,8 @@ namespace WebHotel.Repository.AuthenRepository
                 status.StatusCode = 1;
                 status.Message = "Tạo mới thành công. Vui lòng kiểm tra email để kích hoạt tài khoản!";
             }
-            else {
+            else
+            {
                 status.StatusCode = 0;
                 status.Message = "Tạo mới thành công, nhưng gửi mail thất bại";
             }
@@ -207,9 +210,9 @@ namespace WebHotel.Repository.AuthenRepository
 
 
 
-        public async Task<Status> RegistrationAdmin([FromBody] RegistrationModel model)
+        public async Task<StatusDto> RegistrationAdmin([FromBody] RegistrationDto model)
         {
-            var status = new Status();
+            var status = new StatusDto();
             if (!ModelState.IsValid)
             {
                 status.StatusCode = 0;
@@ -229,7 +232,7 @@ namespace WebHotel.Repository.AuthenRepository
                 UserName = model.UserName,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Email = model.Email,
-                Name = model.Name
+                Name = model.Name!,
             };
             // create a user here
             var result = await _userManager.CreateAsync(user, model.Password!);
@@ -252,44 +255,50 @@ namespace WebHotel.Repository.AuthenRepository
             return status;
         }
 
-        public async Task<Status> RequestResetPassword(string? email)
+        public async Task<StatusDto> RequestResetPassword(string? email)
         {
-            var status = new Status();
-
+            var status = new StatusDto();
             var user = await _userManager.FindByEmailAsync(email!);
-
-            const string chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
-            Random random = new Random();
-            IEnumerable<string> string_Enumerable = Enumerable.Repeat(chars, 8);
-            char[] arr = string_Enumerable.Select(s => s[random.Next(s.Length)]).ToArray();
-            var password = "@T" + string.Join("", arr);
-
-            await _userManager.RemovePasswordAsync(user);
-            var check = await _userManager.AddPasswordAsync(user, password);
-
-            if (check.Succeeded)
+            if (user is not null)
             {
-                _mailRepository.Email(new EmailRequest
+                const string chars = "AaBbCcDdEeFfGgHhIiJjKkLlMmNnOoPpQqRrSsTtUuVvWwXxYyZz0123456789";
+                Random random = new Random();
+                IEnumerable<string> string_Enumerable = Enumerable.Repeat(chars, 8);
+                char[] arr = string_Enumerable.Select(s => s[random.Next(s.Length)]).ToArray();
+                var password = "@T" + string.Join("", arr);
+
+                await _userManager.RemovePasswordAsync(user);
+                var check = await _userManager.AddPasswordAsync(user, password);
+
+                if (check.Succeeded)
                 {
-                    To = user.Email,
-                    Subject = "Mail reset mật khẩu tài khoản!",
-                    Body = "Chào bạn, " + user.Name + "! Mật khẩu mới của bạn là: " + password + ". Vui lòng không đổi mật khẩu mới sau khi đăng nhập tài khoản!"
-                });
-                status.StatusCode = 1;
-                status.Message = "Vui lòng kiểm tra hòm thử để nhận mật khẩu mới!";
-                return status;
+                    _mailRepository.Email(new EmailRequestDto
+                    {
+                        To = user.Email,
+                        Subject = "Mail reset mật khẩu tài khoản!",
+                        Body = "Chào bạn, " + user.Name + "! Mật khẩu mới của bạn là: " + password + ". Vui lòng không đổi mật khẩu mới sau khi đăng nhập tài khoản!"
+                    });
+                    status.StatusCode = 1;
+                    status.Message = "Vui lòng kiểm tra hòm thử để nhận mật khẩu mới!";
+                    return status;
+                }
+                else
+                {
+                    status.StatusCode = 0;
+                    status.Message = "Có lỗi trong quá trình reset mật khẩu mới! Vui lòng thử lại!";
+                }
             }
             status.StatusCode = 0;
-            status.Message = "Có lỗi trong quá trình reset mật khẩu mới! Vui lòng thử lại!";
+            status.Message = "Email không tồn tại trong hệ thống!";
             return status;
         }
 
-        public async Task<Status> RequestChangePassword(ForgotPasswordModel forgotPasswordModel)
+        public async Task<StatusDto> RequestChangePassword(ForgotPasswordDto forgotPasswordModel)
         {
             var user = await _userManager.FindByEmailAsync(forgotPasswordModel.Email!);
             if (user is null)
             {
-                return new Status { StatusCode = 0, Message = "Email not found" };
+                return new StatusDto { StatusCode = 0, Message = "Email không tồn tại" };
             }
             string token = await _userManager.GeneratePasswordResetTokenAsync(user);
             var param = new Dictionary<string, string?>
@@ -298,24 +307,24 @@ namespace WebHotel.Repository.AuthenRepository
                 {"email", forgotPasswordModel.Email }
             };
             var callback = QueryHelpers.AddQueryString(forgotPasswordModel.ClientURI!, param);
-            _mailRepository.Email(new EmailRequest
+            _mailRepository.Email(new EmailRequestDto
             {
                 To = user.Email,
                 Subject = "Mail confim change pass",
-                Body = "Change password link: <a href=\""+callback+ "\">Click Confirm</a>"
+                Body = "Change password link: <a href=\"" + callback + "\">Click Confirm</a>"
             });
-            return new Status { StatusCode = 1, Message = "Please check mail to change pass"};
+            return new StatusDto { StatusCode = 1, Message = "Please check mail to change pass" };
         }
 
-        public async Task<Status> ConfirmChangePassword(string? code, string? email, ResetPasswordModel resetPasswordModel)
+        public async Task<StatusDto> ConfirmChangePassword(ResetPasswordDto resetPasswordModel)
         {
-            var user = await _userManager.FindByEmailAsync(email);
-            var check = await _userManager.ResetPasswordAsync(user, code, resetPasswordModel.NewPassword);
+            var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email!);
+            var check = await _userManager.ResetPasswordAsync(user!, resetPasswordModel.Token!, resetPasswordModel.NewPassword!);
             if (check.Succeeded)
             {
-                return new Status { StatusCode = 1, Message = "Change pass successfull" };
+                return new StatusDto { StatusCode = 1, Message = "Change pass successfull" };
             }
-            return new Status { StatusCode = 0, Message = "Change pass failed" };
+            return new StatusDto { StatusCode = 0, Message = "Change pass failed" };
         }
     }
 }

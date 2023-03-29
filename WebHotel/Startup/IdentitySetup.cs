@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using WebHotel.Data;
+using WebHotel.Model;
 
 namespace WebHotel.Startup
 {
