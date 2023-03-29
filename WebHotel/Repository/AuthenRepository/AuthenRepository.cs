@@ -184,7 +184,7 @@ namespace WebHotel.Repository.AuthenRepository
                 {"code", code }
 
             };
-            string callBack = QueryHelpers.AddQueryString(_configuration.GetSection("URL_HOST").ToString()!, param);
+            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"].ToString()!, param);
 
             if (_mailRepository.Email(new EmailRequestDto
             {
