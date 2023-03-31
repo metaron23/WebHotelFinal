@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
+using System.Web;
 using WebHotel.Commom;
 using WebHotel.Data;
 using WebHotel.DTO;
@@ -176,7 +177,7 @@ namespace WebHotel.Repository.AuthenRepository
                 await _userManager.AddToRoleAsync(user, UserRoles.User);
             }
 
-            string code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+            string code = HttpUtility.UrlEncode(await _userManager.GenerateEmailConfirmationTokenAsync(user));
 
             var param = new Dictionary<string, string?>
             {
@@ -184,7 +185,7 @@ namespace WebHotel.Repository.AuthenRepository
                 {"code", code }
 
             };
-            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"].ToString()!, param);
+            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"].ToString()! + "/api/Authen/ConfirmEmailRegiste", param);
 
             if (_mailRepository.Email(new EmailRequestDto
             {
@@ -210,7 +211,7 @@ namespace WebHotel.Repository.AuthenRepository
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
                 return false;
-            var result = await _userManager.ConfirmEmailAsync(user, code);
+            var result = await _userManager.ConfirmEmailAsync(user, HttpUtility.UrlDecode(code));
             return result.Succeeded;
         }
 
@@ -306,7 +307,7 @@ namespace WebHotel.Repository.AuthenRepository
             {
                 return new StatusDto { StatusCode = 0, Message = "Email không tồn tại" };
             }
-            string token = await _userManager.GeneratePasswordResetTokenAsync(user);
+            string token = HttpUtility.UrlEncode(await _userManager.GeneratePasswordResetTokenAsync(user));
             var param = new Dictionary<string, string?>
             {
                 {"token", token },
@@ -317,7 +318,7 @@ namespace WebHotel.Repository.AuthenRepository
             {
                 To = user.Email,
                 Subject = "Mail confim change pass",
-                Body = "Change password link: <a href=\"" + callBack + "\">Click Confirm</a>"
+                Body = "Change password link: <a href=\"" + callBack + "\">Click Confirm</a>, " + token + ""
             });
             return new StatusDto { StatusCode = 1, Message = "Please check mail to change pass" };
         }
@@ -325,7 +326,7 @@ namespace WebHotel.Repository.AuthenRepository
         public async Task<StatusDto> ConfirmChangePassword(ResetPasswordDto resetPasswordModel)
         {
             var user = await _userManager.FindByEmailAsync(resetPasswordModel.Email!);
-            var check = await _userManager.ResetPasswordAsync(user!, resetPasswordModel.Token!, resetPasswordModel.NewPassword!);
+            var check = await _userManager.ResetPasswordAsync(user!, HttpUtility.UrlDecode(resetPasswordModel.Token!), resetPasswordModel.NewPassword!);
             if (check.Succeeded)
             {
                 return new StatusDto { StatusCode = 1, Message = "Change pass successfull" };

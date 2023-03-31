@@ -3,17 +3,20 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using WebHotel.Data;
 
 #nullable disable
 
-namespace WebHotel.Migrations
+namespace WebHotel.Data.Migrations
 {
     [DbContext(typeof(MyDBContext))]
-    partial class MyDBContextModelSnapshot : ModelSnapshot
+    [Migration("20230331013720_add-column-user")]
+    partial class addcolumnuser
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -173,11 +176,8 @@ namespace WebHotel.Migrations
                         .IsConcurrencyToken()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<DateTime?>("CreatedAt")
-                        .IsConcurrencyToken()
-                        .ValueGeneratedOnAddOrUpdate()
-                        .HasColumnType("datetime2")
-                        .HasDefaultValueSql("GetDate()");
+                    b.Property<TimeSpan>("CreatedAt")
+                        .HasColumnType("time");
 
                     b.Property<string>("Email")
                         .HasMaxLength(256)
@@ -653,10 +653,8 @@ namespace WebHotel.Migrations
             modelBuilder.Entity("WebHotel.Model.Room", b =>
                 {
                     b.Property<string>("Id")
-                        .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)")
-                        .HasDefaultValueSql("newid()");
+                        .HasColumnType("nvarchar(255)");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -703,14 +701,8 @@ namespace WebHotel.Migrations
                     b.Property<int>("RoomTypeId")
                         .HasColumnType("int");
 
-                    b.Property<int?>("StarAmount")
-                        .HasColumnType("int");
-
-                    b.Property<float?>("StarSum")
+                    b.Property<float?>("Star")
                         .HasColumnType("real");
-
-                    b.Property<int?>("StarValue")
-                        .HasColumnType("int");
 
                     b.Property<byte[]>("UpdatedAt")
                         .IsConcurrencyToken()

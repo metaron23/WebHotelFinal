@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebHotel.Model;
+﻿namespace WebHotel.Model;
 
 public partial class Room
 {
@@ -17,7 +14,9 @@ public partial class Room
 
     public string? RoomPicture { get; set; }
 
-    public float? Star { get; set; }
+    public int? StarValue { get; set; }
+    public int? StarAmount { get; set; }
+    public float? StarSum { get; set; }
 
     public bool? GuestNumber { get; set; }
 

@@ -1,4 +1,4 @@
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using WebHotel.Data;
 using WebHotel.Service.NotifiHub;
 using WebHotel.Startup;
@@ -39,6 +39,8 @@ builder.Services.AuthorService();
 builder.Services.AddSignalR();
 builder.Services.AddAutoMapper(typeof(Program));
 
+builder.Services.AddSwaggerGen();
+
 var app = builder.Build();
 // Configure the HTTP request pipeline.
 
@@ -49,6 +51,12 @@ app.UseSwaggerUI();
 
 app.UseDefaultFiles();
 app.UseStaticFiles();
+
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwagger();
+    app.UseSwaggerUI();
+};
 
 #region Master
 app.UseHttpsRedirection();
@@ -64,5 +72,6 @@ app.MapHub<ChatHub>("hub");
 app.UseAuthentication();
 app.UseAuthorization();
 app.MapControllers();
+
 app.Run();
 #endregion

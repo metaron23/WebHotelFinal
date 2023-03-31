@@ -5,6 +5,10 @@ namespace WebHotel.Model
     public class ApplicationUser : IdentityUser
     {
         public string Name { get; set; } = null!;
+        public string? Address { get; set; }
+        public string? CMND { get; set; }
+        public string? Image { get; set; }
+        public DateTime? CreatedAt { get; set; }
 
         public virtual ICollection<DiscountReservationDetail> DiscountReservationDetails { get; } = new List<DiscountReservationDetail>();
 

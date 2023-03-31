@@ -1,0 +1,7 @@
+//Backup rds
+exec msdb.dbo.rds_backup_database
+@source_db_name='Hotel',
+@s3_arn_to_backup_to='arn:aws:s3:::elasticbeanstalk-ap-south-1-195526968903/backup1.bak',
+@type='FULL';
+
+exec msdb.dbo.rds_ta

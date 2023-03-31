@@ -54,6 +54,8 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
         modelBuilder.Entity<ApplicationUser>(entity =>
         {
             entity.HasKey(e => e.Id);
+            entity.Property(e => e.Image).HasMaxLength(450);
+            entity.Property(e => e.CreatedAt).IsRowVersion().IsConcurrencyToken().HasDefaultValueSql("GetDate()");
         });
         modelBuilder.Entity<Discount>(entity =>
         {
@@ -301,7 +303,6 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
                 .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FKReservatio956578");
         });
-
         modelBuilder.Entity<Room>(entity =>
         {
             entity.HasKey(e => e.Id).HasName("PK__Room__3214EC0771E8712D");
@@ -312,7 +313,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
             entity.HasIndex(e => e.RoomNumber, "Room_RoomNumber").IsUnique();
 
-            entity.Property(e => e.Id).HasMaxLength(255);
+            entity.Property(e => e.Id).HasMaxLength(255).HasDefaultValueSql("newid()");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
