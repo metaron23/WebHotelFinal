@@ -1,4 +1,6 @@
-﻿namespace WebHotel.DTO.RoomDtos
+﻿using WebHotel.Model;
+
+namespace WebHotel.DTO.RoomDtos
 {
     public class RoomResponseDto
     {
@@ -16,12 +18,14 @@
 
         public float? StarSum { get; set; }
 
-        public bool? GuestNumber { get; set; }
+        public int? GuestNumber { get; set; }
 
         public decimal CurrentPrice { get; set; }
 
         public decimal? DiscountPrice { get; set; }
 
         public string? RoomTypeName { get; set; }
+
+        public virtual ICollection<Reservation> Reservations { get; set; } = new List<Reservation>();
     }
 }

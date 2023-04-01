@@ -19,5 +19,12 @@ namespace WebHotel.Controllers
             var result = await _roomRepository.getAll();
             return Ok(result);
         }
+
+        [HttpGet]
+        public async Task<IActionResult> getAllBy(DateTime? checkIn, DateTime? checkOut, decimal? price, int? typeRoomId, float? star, int? peopleNumber)
+        {
+            var result = await _roomRepository.getAllBy(checkIn, checkOut, price, typeRoomId, star, peopleNumber);
+            return Ok(result);
+        }
     }
 }

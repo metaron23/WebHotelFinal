@@ -322,7 +322,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.DiscountPrice).HasColumnType("decimal(19, 2)");
             entity.Property(e => e.GuestNumber)
                 .IsRequired()
-                .HasDefaultValueSql("((1))");
+                .HasDefaultValueSql("((0))");
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValueSql("('true')");

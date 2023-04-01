@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebHotel.Data;
 using WebHotel.DTO.RoomDtos;
 using WebHotel.Model;
@@ -16,22 +17,62 @@ namespace WebHotel.Repository.RoomRepository
             _mapper = mapper;
         }
 
-        //public void checkDiscount()
-        //{
-        //    _context.Rooms.Select()
-        //}
+        public async Task checkDiscount(Room room)
+        {
+            //_context.Rooms.Select(a => _context.DiscountRoomDetails)
+            var discount = await _context.DiscountRoomDetails.Include(a => a.Discount)
+                .Where(a => a.RoomId == room.Id).Where(a => a.Discount.StartAt <= DateTime.Now).Where(a => a.Discount.EndAt >= DateTime.Now).Where(a => a.Discount.AmountUse > 0).SingleOrDefaultAsync();
+            if (discount != null)
+            {
+                room.DiscountPrice = (room.CurrentPrice * discount.Discount.DiscountPercent) / 100;
+            }
+        }
 
         public async Task<IEnumerable<RoomResponseDto>> getAll()
         {
-            var roomsBase = _context.Rooms;
+            var roomBases = await _context.Rooms.Include(a => a.RoomType).AsNoTracking().ToListAsync();
+            var roomResponse = new RoomResponseDto();
             var roomResponses = new List<RoomResponseDto>();
-            roomResponses = roomsBase.Select(_mapper.Map<Room, RoomResponseDto>).ToList();
+            foreach (var item in roomBases)
+            {
+                await checkDiscount(item);
+                roomResponse = _mapper.Map<RoomResponseDto>(item);
+                roomResponse.RoomTypeName = item.RoomType.TypeName;
+                roomResponses.Add(roomResponse);
+            }
             return roomResponses;
         }
 
-        public IEnumerable<RoomResponseDto> getAllBy(DateTime? checkIn, DateTime? checkOut, float? price, string? typeRoom, float? Star, int? peopleNumber)
+        public async Task<IEnumerable<RoomResponseDto>> getAllBy(DateTime? checkIn, DateTime? checkOut, decimal? price, int? typeRoomId, float? star, int? peopleNumber)
         {
-            throw new NotImplementedException();
+            var roomBasesQuery = _context.Rooms.Include(a => a.RoomType).AsNoTracking().AsQueryable();
+            if (price != null)
+            {
+                roomBasesQuery = roomBasesQuery.Where(a => a.CurrentPrice <= price || (a.DiscountPrice > 0 && a.DiscountPrice <= price));
+            }
+            if (typeRoomId != null)
+            {
+                roomBasesQuery = roomBasesQuery.Where(a => a.RoomTypeId == typeRoomId);
+            }
+            if (star != null)
+            {
+                roomBasesQuery = roomBasesQuery.Where(a => a.StarSum == star);
+            }
+            if (peopleNumber != null)
+            {
+                roomBasesQuery = roomBasesQuery.Where(a => a.GuestNumber == peopleNumber);
+            }
+            var roomResponse = new RoomResponseDto();
+            var roomResponses = new List<RoomResponseDto>();
+            var roomBases = await roomBasesQuery.ToListAsync();
+            foreach (var item in roomBases)
+            {
+                await checkDiscount(item);
+                roomResponse = _mapper.Map<RoomResponseDto>(item);
+                roomResponse.RoomTypeName = item.RoomType.TypeName;
+                roomResponses.Add(roomResponse);
+            }
+            return roomResponses;
         }
 
         public RoomResponseDto getById(string id)

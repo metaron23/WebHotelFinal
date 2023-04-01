@@ -18,7 +18,7 @@ public partial class Room
     public int? StarAmount { get; set; }
     public float? StarSum { get; set; }
 
-    public bool? GuestNumber { get; set; }
+    public int? GuestNumber { get; set; }
 
     public decimal CurrentPrice { get; set; }
 

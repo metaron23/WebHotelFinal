@@ -185,7 +185,7 @@ namespace WebHotel.Repository.AuthenRepository
                 {"code", code }
 
             };
-            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"].ToString()! + "/api/Authen/ConfirmEmailRegiste", param);
+            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"]!.ToString() + "/api/Authen/ConfirmEmailRegiste", param);
 
             if (_mailRepository.Email(new EmailRequestDto
             {

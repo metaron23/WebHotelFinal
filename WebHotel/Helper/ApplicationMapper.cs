@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using WebHotel.DTO.RoomDtos;
+using WebHotel.DTO.RoomStarDtos;
 using WebHotel.DTO.Token;
 using WebHotel.DTO.UserDtos;
 using WebHotel.Model;
@@ -14,6 +15,7 @@ namespace WebHotel.Helper
             CreateMap<UserProfileRequestDto, ApplicationUser>().ReverseMap();
             CreateMap<UserProfileResponseDto, ApplicationUser>().ReverseMap();
             CreateMap<RoomResponseDto, Room>().ReverseMap();
+            CreateMap<RoomStarRequestDto, RoomStar>().ReverseMap();
         }
     }
 }
