@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using WebHotel.Models;
 
 namespace WebHotel.Model
 {

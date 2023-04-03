@@ -2,7 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using WebHotel.Data;
 using WebHotel.DTO.RoomDtos;
-using WebHotel.Model;
+using WebHotel.Models;
 
 namespace WebHotel.Repository.RoomRepository
 {

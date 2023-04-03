@@ -1,7 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using WebHotel.Model;
 
-namespace WebHotel.Model;
+namespace WebHotel.Models;
 
 public partial class InvoiceReservation
 {

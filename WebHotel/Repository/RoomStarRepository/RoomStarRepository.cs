@@ -2,7 +2,7 @@
 using WebHotel.Data;
 using WebHotel.DTO;
 using WebHotel.DTO.RoomStarDtos;
-using WebHotel.Model;
+using WebHotel.Models;
 
 namespace WebHotel.Repository.RoomStarRepository
 {
@@ -19,9 +19,14 @@ namespace WebHotel.Repository.RoomStarRepository
 
         public async Task<StatusDto> Create(RoomStarRequestDto roomStarRequestDto)
         {
-            await _context.AddAsync(_mapper.Map<RoomStar>(roomStarRequestDto));
-            await _context.SaveChangesAsync();
-            return new StatusDto { StatusCode = 1, Message = "Successful comment!" };
+            var room = _context.Rooms.SingleOrDefault(a => a.Id == roomStarRequestDto.RoomId);
+            if (room is not null)
+            {
+                await _context.AddAsync(_mapper.Map<RoomStar>(roomStarRequestDto));
+                await _context.SaveChangesAsync();
+                return new StatusDto { StatusCode = 1, Message = "Successful comment!" };
+            }
+            return new StatusDto { StatusCode = 0, Message = "Id room not found!" };
         }
     }
 }

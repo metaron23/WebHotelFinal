@@ -1,6 +1,8 @@
 ﻿using WebHotel.Repository.AuthenRepository;
 using WebHotel.Repository.EmailRepository;
 using WebHotel.Repository.RoomRepository;
+using WebHotel.Repository.RoomStarRepository;
+using WebHotel.Repository.RoomTypeRepository;
 using WebHotel.Repository.UserProfileRepository;
 using WebHotel.Service.FileService;
 using WebHotel.Service.TokenRepository;
@@ -17,6 +19,8 @@ namespace WebHotel.Startup
             services.AddScoped<IUserRepository, UserRepository>();
             services.AddScoped<IFileService, FileService>();
             services.AddScoped<IRoomRepository, RoomRepository>();
+            services.AddScoped<IRoomStarRepository, RoomStarRepository>();
+            services.AddScoped<IRoomTypeRepository, RoomTypeRepository>();
             return services;
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace WebHotel.Model;
+﻿using WebHotel.Model;
+
+namespace WebHotel.Models;
 
 public partial class Discount
 {

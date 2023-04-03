@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace WebHotel.Model;
+namespace WebHotel.Models;
 
 public partial class RoomStar
 {

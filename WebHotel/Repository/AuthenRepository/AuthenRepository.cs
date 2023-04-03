@@ -9,6 +9,7 @@ using WebHotel.Data;
 using WebHotel.DTO;
 using WebHotel.DTO.Authentication;
 using WebHotel.Model;
+using WebHotel.Models;
 using WebHotel.Repository.EmailRepository;
 using WebHotel.Service.TokenRepository;
 

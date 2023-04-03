@@ -1,4 +1,7 @@
-﻿namespace WebHotel.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace WebHotel.Models;
 
 public partial class Room
 {
@@ -14,11 +17,9 @@ public partial class Room
 
     public string? RoomPicture { get; set; }
 
-    public int? StarValue { get; set; }
-    public int? StarAmount { get; set; }
-    public float? StarSum { get; set; }
+    public int? StarSum { get; set; }
 
-    public int? GuestNumber { get; set; }
+    public int GuestNumber { get; set; }
 
     public decimal CurrentPrice { get; set; }
 
@@ -30,11 +31,15 @@ public partial class Room
 
     public int RoomTypeId { get; set; }
 
+    public int? StarAmount { get; set; }
+
+    public int? StarValue { get; set; }
+
     public virtual ICollection<DiscountRoomDetail> DiscountRoomDetails { get; } = new List<DiscountRoomDetail>();
 
     public virtual ICollection<Reservation> Reservations { get; } = new List<Reservation>();
 
-    public virtual ICollection<RoomStar> RoomStarts { get; } = new List<RoomStar>();
+    public virtual ICollection<RoomStar> RoomStars { get; } = new List<RoomStar>();
 
     public virtual RoomType RoomType { get; set; } = null!;
 }

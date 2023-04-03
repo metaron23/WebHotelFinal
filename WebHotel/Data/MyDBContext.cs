@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using WebHotel.Model;
+using WebHotel.Models;
 
 namespace WebHotel.Data;
 
@@ -59,7 +60,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
         });
         modelBuilder.Entity<Discount>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC07023FEEE8");
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC078ED86676");
 
             entity.ToTable("Discount");
 
@@ -76,17 +77,17 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Creator).WithMany(p => p.Discounts)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscount927333");
+                .HasConstraintName("FK_Discount_AspNetUsers");
 
             entity.HasOne(d => d.DiscountType).WithMany(p => p.Discounts)
                 .HasForeignKey(d => d.DiscountTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscount61895");
+                .HasConstraintName("FK_Discount_DiscountType");
         });
 
         modelBuilder.Entity<DiscountReservationDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC073350C584");
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC076173384A");
 
             entity.ToTable("DiscountReservationDetail");
 
@@ -96,22 +97,22 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Creator).WithMany(p => p.DiscountReservationDetails)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountRe595640");
+                .HasConstraintName("FK_DiscountReservationDetail_AspNetUsers");
 
             entity.HasOne(d => d.Discount).WithMany(p => p.DiscountReservationDetails)
                 .HasForeignKey(d => d.DiscountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountRe678897");
+                .HasConstraintName("FK_DiscountReservationDetail_Discount");
 
             entity.HasOne(d => d.Reservation).WithMany(p => p.DiscountReservationDetails)
                 .HasForeignKey(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountRe215096");
+                .HasConstraintName("FK_DiscountReservationDetai_Reservation");
         });
 
         modelBuilder.Entity<DiscountRoomDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC078E422AFB");
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC0780B8A9E7");
 
             entity.ToTable("DiscountRoomDetail");
 
@@ -121,22 +122,22 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Creator).WithMany(p => p.DiscountRoomDetails)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountRo944649");
+                .HasConstraintName("FK_DiscountRoomDetail_AspNetUsers");
 
             entity.HasOne(d => d.Discount).WithMany(p => p.DiscountRoomDetails)
                 .HasForeignKey(d => d.DiscountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountRo138607");
+                .HasConstraintName("FK_DiscountRoomDetail_Discount");
 
             entity.HasOne(d => d.Room).WithMany(p => p.DiscountRoomDetails)
                 .HasForeignKey(d => d.RoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountRo29575");
+                .HasConstraintName("FK_DiscountRoomDetail_Room");
         });
 
         modelBuilder.Entity<DiscountServiceDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC0758312396");
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC07F7AD559D");
 
             entity.ToTable("DiscountServiceDetail");
 
@@ -145,22 +146,22 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Creator).WithMany(p => p.DiscountServiceDetails)
                 .HasForeignKey(d => d.CreatorId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountSe833248");
+                .HasConstraintName("FK_DiscountService_AspNetUsers");
 
             entity.HasOne(d => d.Discount).WithMany(p => p.DiscountServiceDetails)
                 .HasForeignKey(d => d.DiscountId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountSe250008");
+                .HasConstraintName("FK_DiscountServiceDetail_Discount");
 
             entity.HasOne(d => d.Service).WithMany(p => p.DiscountServiceDetails)
                 .HasForeignKey(d => d.ServiceId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKDiscountSe716587");
+                .HasConstraintName("FK_DiscountServiceDetail_ServiceRoom");
         });
 
         modelBuilder.Entity<DiscountType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC077E70E0C3");
+            entity.HasKey(e => e.Id).HasName("PK__Discount__3214EC070D2B3684");
 
             entity.ToTable("DiscountType");
 
@@ -171,7 +172,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<InvoiceReservation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__InvoiceR__3214EC0792A2C41D");
+            entity.HasKey(e => e.Id).HasName("PK__InvoiceR__3214EC07A70F1055");
 
             entity.ToTable("InvoiceReservation");
 
@@ -191,17 +192,17 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Confirmer).WithMany(p => p.InvoiceReservations)
                 .HasForeignKey(d => d.ConfirmerId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKInvoiceRes286606");
+                .HasConstraintName("FK_InvoiceReservation_AspNetUsers");
 
             entity.HasOne(d => d.Reservation).WithMany(p => p.InvoiceReservations)
                 .HasForeignKey(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKInvoiceRes190462");
+                .HasConstraintName("FK_InvoiceReservation_Reservation");
         });
 
         modelBuilder.Entity<OrderService>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__OrderSer__3214EC076B892BFE");
+            entity.HasKey(e => e.Id).HasName("PK__OrderSer__3214EC07E6ACBE95");
 
             entity.ToTable("OrderService");
 
@@ -213,26 +214,28 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Reservation).WithMany(p => p.OrderServices)
                 .HasForeignKey(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKOrderServi258673");
+                .HasConstraintName("FK_OrderService_Reservation");
 
             entity.HasOne(d => d.ServiceRoom).WithMany(p => p.OrderServices)
                 .HasForeignKey(d => d.ServiceRoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKOrderServi447170");
+                .HasConstraintName("FK_OrderService_ServiceRoom");
 
             entity.HasOne(d => d.User).WithMany(p => p.OrderServices)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKOrderServi791508");
+                .HasConstraintName("FK_OrderService_AspNetUsers");
         });
 
         modelBuilder.Entity<Reservation>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC077D5C0580");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC075152009A");
 
             entity.ToTable("Reservation");
 
-            entity.Property(e => e.Id).HasMaxLength(255);
+            entity.Property(e => e.Id)
+                .HasMaxLength(255)
+                .HasDefaultValueSql("('newid()')");
             entity.Property(e => e.CreatedAt)
                 .IsRowVersion()
                 .IsConcurrencyToken();
@@ -249,17 +252,17 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Room).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.RoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKReservatio111598");
+                .HasConstraintName("FK_Reservation_Room");
 
             entity.HasOne(d => d.User).WithMany(p => p.Reservations)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKReservatio38059");
+                .HasConstraintName("FK_Reservation_AspNetUsers");
         });
 
         modelBuilder.Entity<ReservationChat>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07C34EF3BE");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC073328611D");
 
             entity.ToTable("ReservationChat");
 
@@ -274,12 +277,12 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationChats)
                 .HasForeignKey(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKReservatio436575");
+                .HasConstraintName("FK_ReservationChat_Reservation");
         });
 
         modelBuilder.Entity<ReservationStatus>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07DDAE021A");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC0748171EE6");
 
             entity.ToTable("ReservationStatus");
 
@@ -288,7 +291,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<ReservationStatusEvent>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC075214B5A8");
+            entity.HasKey(e => e.Id).HasName("PK__Reservat__3214EC07950B4BF3");
 
             entity.Property(e => e.CreateAt).HasColumnType("datetime");
             entity.Property(e => e.ReservationId).HasMaxLength(255);
@@ -296,16 +299,17 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.Reservation).WithMany(p => p.ReservationStatusEvents)
                 .HasForeignKey(d => d.ReservationId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKReservatio37187");
+                .HasConstraintName("FK_ReservationStatusEventsn_Reservation");
 
             entity.HasOne(d => d.ReservationStatus).WithMany(p => p.ReservationStatusEvents)
                 .HasForeignKey(d => d.ReservationStatusId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKReservatio956578");
+                .HasConstraintName("FK_ReservationStatusEvents_ReservationStatus");
         });
+
         modelBuilder.Entity<Room>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC0771E8712D");
+            entity.HasKey(e => e.Id).HasName("PK__Room__3214EC078410FF00");
 
             entity.ToTable("Room");
 
@@ -313,16 +317,16 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
             entity.HasIndex(e => e.RoomNumber, "Room_RoomNumber").IsUnique();
 
-            entity.Property(e => e.Id).HasMaxLength(255).HasDefaultValueSql("newid()");
+            entity.Property(e => e.Id)
+                .HasMaxLength(255)
+                .HasDefaultValueSql("('newid()')");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.CurrentPrice).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.Description).HasColumnType("ntext");
             entity.Property(e => e.DiscountPrice).HasColumnType("decimal(19, 2)");
-            entity.Property(e => e.GuestNumber)
-                .IsRequired()
-                .HasDefaultValueSql("((0))");
+            entity.Property(e => e.GuestNumber).HasDefaultValueSql("((1))");
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValueSql("('true')");
@@ -333,6 +337,9 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.RoomPicture)
                 .HasMaxLength(255)
                 .IsUnicode(false);
+            entity.Property(e => e.StarAmount).HasDefaultValueSql("((1))");
+            entity.Property(e => e.StarSum).HasDefaultValueSql("((1))");
+            entity.Property(e => e.StarValue).HasDefaultValueSql("((1))");
             entity.Property(e => e.UpdatedAt)
                 .IsRowVersion()
                 .IsConcurrencyToken();
@@ -340,26 +347,26 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasOne(d => d.RoomType).WithMany(p => p.Rooms)
                 .HasForeignKey(d => d.RoomTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKRoom188940");
+                .HasConstraintName("FK_Room_RoomType");
         });
 
         modelBuilder.Entity<RoomStar>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RoomStar__3214EC07E2560515");
+            entity.HasKey(e => e.Id).HasName("PK__RoomStar__3214EC0789A3F679");
 
-            entity.ToTable("RoomStart");
+            entity.ToTable("RoomStar");
 
             entity.Property(e => e.RoomId).HasMaxLength(255);
 
-            entity.HasOne(d => d.Room).WithMany(p => p.RoomStarts)
+            entity.HasOne(d => d.Room).WithMany(p => p.RoomStars)
                 .HasForeignKey(d => d.RoomId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKRoomStart413566");
+                .HasConstraintName("FK_RoomStar_Room");
         });
 
         modelBuilder.Entity<RoomType>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__RoomType__3214EC07B21F96D7");
+            entity.HasKey(e => e.Id).HasName("PK__RoomType__3214EC078A6FFBFF");
 
             entity.ToTable("RoomType");
 
@@ -370,7 +377,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<ServiceAttach>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ServiceA__3214EC0700176119");
+            entity.HasKey(e => e.Id).HasName("PK__ServiceA__3214EC07B90411A4");
 
             entity.ToTable("ServiceAttach");
 
@@ -382,24 +389,24 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
         modelBuilder.Entity<ServiceAttachDetail>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ServiceA__3214EC0778073DD2");
+            entity.HasKey(e => e.Id).HasName("PK__ServiceA__3214EC0770EA377F");
 
             entity.ToTable("ServiceAttachDetail");
 
             entity.HasOne(d => d.RoomType).WithMany(p => p.ServiceAttachDetails)
                 .HasForeignKey(d => d.RoomTypeId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKServiceAtt405938");
+                .HasConstraintName("FK_ServiceAttachDetail_RoomType");
 
             entity.HasOne(d => d.ServiceAttach).WithMany(p => p.ServiceAttachDetails)
                 .HasForeignKey(d => d.ServiceAttachId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FKServiceAtt700016");
+                .HasConstraintName("FK_ServiceAttachDetail_ServiceAttach");
         });
 
         modelBuilder.Entity<ServiceRoom>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__ServiceR__3214EC0728E81D09");
+            entity.HasKey(e => e.Id).HasName("PK__ServiceR__3214EC077BECCD82");
 
             entity.ToTable("ServiceRoom");
 

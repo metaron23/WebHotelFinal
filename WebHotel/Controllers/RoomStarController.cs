@@ -18,7 +18,12 @@ namespace WebHotel.Controllers
         [HttpPost]
         public async Task<IActionResult> Create(RoomStarRequestDto roomStarRequestDto)
         {
-            return Ok(await _roomStarRepository.Create(roomStarRequestDto));
+            var result = await _roomStarRepository.Create(roomStarRequestDto);
+            if (result.StatusCode == 1)
+            {
+                return Ok(result);
+            }
+            return BadRequest(result);
         }
     }
 }
