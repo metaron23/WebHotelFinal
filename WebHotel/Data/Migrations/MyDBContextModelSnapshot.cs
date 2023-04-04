@@ -8,7 +8,7 @@ using WebHotel.Data;
 
 #nullable disable
 
-namespace WebHotel.Migrations
+namespace WebHotel.Data.Migrations
 {
     [DbContext(typeof(MyDBContext))]
     partial class MyDBContextModelSnapshot : ModelSnapshot
@@ -240,7 +240,7 @@ namespace WebHotel.Migrations
                     b.ToTable("AspNetUsers", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Discount", b =>
+            modelBuilder.Entity("WebHotel.Models.Discount", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -284,7 +284,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("datetime");
 
                     b.HasKey("Id")
-                        .HasName("PK__Discount__3214EC07023FEEE8");
+                        .HasName("PK__Discount__3214EC078ED86676");
 
                     b.HasIndex("CreatorId");
 
@@ -296,7 +296,7 @@ namespace WebHotel.Migrations
                     b.ToTable("Discount", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountReservationDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountReservationDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -318,7 +318,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Discount__3214EC073350C584");
+                        .HasName("PK__Discount__3214EC076173384A");
 
                     b.HasIndex("CreatorId");
 
@@ -329,7 +329,7 @@ namespace WebHotel.Migrations
                     b.ToTable("DiscountReservationDetail", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountRoomDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountRoomDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -351,7 +351,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Discount__3214EC078E422AFB");
+                        .HasName("PK__Discount__3214EC0780B8A9E7");
 
                     b.HasIndex("CreatorId");
 
@@ -362,7 +362,7 @@ namespace WebHotel.Migrations
                     b.ToTable("DiscountRoomDetail", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountServiceDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountServiceDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -382,7 +382,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Discount__3214EC0758312396");
+                        .HasName("PK__Discount__3214EC07F7AD559D");
 
                     b.HasIndex("CreatorId");
 
@@ -393,7 +393,7 @@ namespace WebHotel.Migrations
                     b.ToTable("DiscountServiceDetail", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountType", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -407,7 +407,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Discount__3214EC077E70E0C3");
+                        .HasName("PK__Discount__3214EC070D2B3684");
 
                     b.HasIndex(new[] { "Name" }, "DiscountType_Name")
                         .IsUnique();
@@ -415,7 +415,7 @@ namespace WebHotel.Migrations
                     b.ToTable("DiscountType", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.InvoiceReservation", b =>
+            modelBuilder.Entity("WebHotel.Models.InvoiceReservation", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -452,7 +452,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__InvoiceR__3214EC0792A2C41D");
+                        .HasName("PK__InvoiceR__3214EC07A70F1055");
 
                     b.HasIndex("ConfirmerId");
 
@@ -461,7 +461,7 @@ namespace WebHotel.Migrations
                     b.ToTable("InvoiceReservation", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.OrderService", b =>
+            modelBuilder.Entity("WebHotel.Models.OrderService", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -494,7 +494,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id")
-                        .HasName("PK__OrderSer__3214EC076B892BFE");
+                        .HasName("PK__OrderSer__3214EC07E6ACBE95");
 
                     b.HasIndex("ReservationId");
 
@@ -505,21 +505,23 @@ namespace WebHotel.Migrations
                     b.ToTable("OrderService", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Reservation", b =>
+            modelBuilder.Entity("WebHotel.Models.Reservation", b =>
                 {
                     b.Property<string>("Id")
+                        .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
-                        .HasColumnType("nvarchar(255)");
+                        .HasColumnType("nvarchar(255)")
+                        .HasDefaultValueSql("('newid()')");
 
                     b.Property<byte[]>("CreatedAt")
                         .IsConcurrencyToken()
                         .ValueGeneratedOnAddOrUpdate()
                         .HasColumnType("rowversion");
 
-                    b.Property<DateTime>("DepositEndAt")
+                    b.Property<DateTime?>("DepositEndAt")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal>("DepositPrice")
+                    b.Property<decimal?>("DepositPrice")
                         .HasColumnType("decimal(19, 2)");
 
                     b.Property<DateTime>("EndDate")
@@ -548,7 +550,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Reservat__3214EC077D5C0580");
+                        .HasName("PK__Reservat__3214EC075152009A");
 
                     b.HasIndex("RoomId");
 
@@ -557,7 +559,7 @@ namespace WebHotel.Migrations
                     b.ToTable("Reservation", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ReservationChat", b =>
+            modelBuilder.Entity("WebHotel.Models.ReservationChat", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -592,14 +594,14 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__Reservat__3214EC07C34EF3BE");
+                        .HasName("PK__Reservat__3214EC073328611D");
 
                     b.HasIndex("ReservationId");
 
                     b.ToTable("ReservationChat", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ReservationStatus", b =>
+            modelBuilder.Entity("WebHotel.Models.ReservationStatus", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -616,12 +618,12 @@ namespace WebHotel.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Reservat__3214EC07DDAE021A");
+                        .HasName("PK__Reservat__3214EC0748171EE6");
 
                     b.ToTable("ReservationStatus", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ReservationStatusEvent", b =>
+            modelBuilder.Entity("WebHotel.Models.ReservationStatusEvent", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -641,7 +643,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__Reservat__3214EC075214B5A8");
+                        .HasName("PK__Reservat__3214EC07950B4BF3");
 
                     b.HasIndex("ReservationId");
 
@@ -650,13 +652,13 @@ namespace WebHotel.Migrations
                     b.ToTable("ReservationStatusEvents");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Room", b =>
+            modelBuilder.Entity("WebHotel.Models.Room", b =>
                 {
                     b.Property<string>("Id")
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasDefaultValueSql("newid()");
+                        .HasDefaultValueSql("('newid()')");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -672,8 +674,7 @@ namespace WebHotel.Migrations
                     b.Property<decimal?>("DiscountPrice")
                         .HasColumnType("decimal(19, 2)");
 
-                    b.Property<int?>("GuestNumber")
-                        .IsRequired()
+                    b.Property<int>("GuestNumber")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
                         .HasDefaultValueSql("((1))");
@@ -704,13 +705,19 @@ namespace WebHotel.Migrations
                         .HasColumnType("int");
 
                     b.Property<int?>("StarAmount")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((1))");
 
-                    b.Property<float?>("StarSum")
-                        .HasColumnType("real");
+                    b.Property<int?>("StarSum")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((1))");
 
                     b.Property<int?>("StarValue")
-                        .HasColumnType("int");
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((1))");
 
                     b.Property<byte[]>("UpdatedAt")
                         .IsConcurrencyToken()
@@ -718,7 +725,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("rowversion");
 
                     b.HasKey("Id")
-                        .HasName("PK__Room__3214EC0771E8712D");
+                        .HasName("PK__Room__3214EC078410FF00");
 
                     b.HasIndex("RoomTypeId");
 
@@ -731,7 +738,7 @@ namespace WebHotel.Migrations
                     b.ToTable("Room", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.RoomStar", b =>
+            modelBuilder.Entity("WebHotel.Models.RoomStar", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -748,14 +755,14 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__RoomStar__3214EC07E2560515");
+                        .HasName("PK__RoomStar__3214EC0789A3F679");
 
                     b.HasIndex("RoomId");
 
-                    b.ToTable("RoomStart", (string)null);
+                    b.ToTable("RoomStar", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.RoomType", b =>
+            modelBuilder.Entity("WebHotel.Models.RoomType", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -769,7 +776,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__RoomType__3214EC07B21F96D7");
+                        .HasName("PK__RoomType__3214EC078A6FFBFF");
 
                     b.HasIndex(new[] { "TypeName" }, "RoomType_TypeName")
                         .IsUnique();
@@ -777,7 +784,7 @@ namespace WebHotel.Migrations
                     b.ToTable("RoomType", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ServiceAttach", b =>
+            modelBuilder.Entity("WebHotel.Models.ServiceAttach", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -794,7 +801,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("nvarchar(255)");
 
                     b.HasKey("Id")
-                        .HasName("PK__ServiceA__3214EC0700176119");
+                        .HasName("PK__ServiceA__3214EC07B90411A4");
 
                     b.HasIndex(new[] { "Name" }, "ServiceAttach_Name")
                         .IsUnique();
@@ -802,7 +809,7 @@ namespace WebHotel.Migrations
                     b.ToTable("ServiceAttach", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ServiceAttachDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.ServiceAttachDetail", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -817,7 +824,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("int");
 
                     b.HasKey("Id")
-                        .HasName("PK__ServiceA__3214EC0778073DD2");
+                        .HasName("PK__ServiceA__3214EC0770EA377F");
 
                     b.HasIndex("RoomTypeId");
 
@@ -826,7 +833,7 @@ namespace WebHotel.Migrations
                     b.ToTable("ServiceAttachDetail", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ServiceRoom", b =>
+            modelBuilder.Entity("WebHotel.Models.ServiceRoom", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -854,7 +861,7 @@ namespace WebHotel.Migrations
                         .HasColumnType("decimal(19, 2)");
 
                     b.HasKey("Id")
-                        .HasName("PK__ServiceR__3214EC0728E81D09");
+                        .HasName("PK__ServiceR__3214EC077BECCD82");
 
                     b.HasIndex(new[] { "Name" }, "ServiceRoom_Name")
                         .IsUnique();
@@ -862,7 +869,7 @@ namespace WebHotel.Migrations
                     b.ToTable("ServiceRoom", (string)null);
                 });
 
-            modelBuilder.Entity("WebHotel.Model.TokenInfo", b =>
+            modelBuilder.Entity("WebHotel.Models.TokenInfo", b =>
                 {
                     b.Property<int>("Id")
                         .ValueGeneratedOnAdd()
@@ -935,44 +942,44 @@ namespace WebHotel.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Discount", b =>
+            modelBuilder.Entity("WebHotel.Models.Discount", b =>
                 {
                     b.HasOne("WebHotel.Model.ApplicationUser", "Creator")
                         .WithMany("Discounts")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscount927333");
+                        .HasConstraintName("FK_Discount_AspNetUsers");
 
-                    b.HasOne("WebHotel.Model.DiscountType", "DiscountType")
+                    b.HasOne("WebHotel.Models.DiscountType", "DiscountType")
                         .WithMany("Discounts")
                         .HasForeignKey("DiscountTypeId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscount61895");
+                        .HasConstraintName("FK_Discount_DiscountType");
 
                     b.Navigation("Creator");
 
                     b.Navigation("DiscountType");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountReservationDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountReservationDetail", b =>
                 {
                     b.HasOne("WebHotel.Model.ApplicationUser", "Creator")
                         .WithMany("DiscountReservationDetails")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountRe595640");
+                        .HasConstraintName("FK_DiscountReservationDetail_AspNetUsers");
 
-                    b.HasOne("WebHotel.Model.Discount", "Discount")
+                    b.HasOne("WebHotel.Models.Discount", "Discount")
                         .WithMany("DiscountReservationDetails")
                         .HasForeignKey("DiscountId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountRe678897");
+                        .HasConstraintName("FK_DiscountReservationDetail_Discount");
 
-                    b.HasOne("WebHotel.Model.Reservation", "Reservation")
+                    b.HasOne("WebHotel.Models.Reservation", "Reservation")
                         .WithMany("DiscountReservationDetails")
                         .HasForeignKey("ReservationId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountRe215096");
+                        .HasConstraintName("FK_DiscountReservationDetai_Reservation");
 
                     b.Navigation("Creator");
 
@@ -981,25 +988,25 @@ namespace WebHotel.Migrations
                     b.Navigation("Reservation");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountRoomDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountRoomDetail", b =>
                 {
                     b.HasOne("WebHotel.Model.ApplicationUser", "Creator")
                         .WithMany("DiscountRoomDetails")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountRo944649");
+                        .HasConstraintName("FK_DiscountRoomDetail_AspNetUsers");
 
-                    b.HasOne("WebHotel.Model.Discount", "Discount")
+                    b.HasOne("WebHotel.Models.Discount", "Discount")
                         .WithMany("DiscountRoomDetails")
                         .HasForeignKey("DiscountId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountRo138607");
+                        .HasConstraintName("FK_DiscountRoomDetail_Discount");
 
-                    b.HasOne("WebHotel.Model.Room", "Room")
+                    b.HasOne("WebHotel.Models.Room", "Room")
                         .WithMany("DiscountRoomDetails")
                         .HasForeignKey("RoomId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountRo29575");
+                        .HasConstraintName("FK_DiscountRoomDetail_Room");
 
                     b.Navigation("Creator");
 
@@ -1008,25 +1015,25 @@ namespace WebHotel.Migrations
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountServiceDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountServiceDetail", b =>
                 {
                     b.HasOne("WebHotel.Model.ApplicationUser", "Creator")
                         .WithMany("DiscountServiceDetails")
                         .HasForeignKey("CreatorId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountSe833248");
+                        .HasConstraintName("FK_DiscountService_AspNetUsers");
 
-                    b.HasOne("WebHotel.Model.Discount", "Discount")
+                    b.HasOne("WebHotel.Models.Discount", "Discount")
                         .WithMany("DiscountServiceDetails")
                         .HasForeignKey("DiscountId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountSe250008");
+                        .HasConstraintName("FK_DiscountServiceDetail_Discount");
 
-                    b.HasOne("WebHotel.Model.ServiceRoom", "Service")
+                    b.HasOne("WebHotel.Models.ServiceRoom", "Service")
                         .WithMany("DiscountServiceDetails")
                         .HasForeignKey("ServiceId")
                         .IsRequired()
-                        .HasConstraintName("FKDiscountSe716587");
+                        .HasConstraintName("FK_DiscountServiceDetail_ServiceRoom");
 
                     b.Navigation("Creator");
 
@@ -1035,44 +1042,44 @@ namespace WebHotel.Migrations
                     b.Navigation("Service");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.InvoiceReservation", b =>
+            modelBuilder.Entity("WebHotel.Models.InvoiceReservation", b =>
                 {
                     b.HasOne("WebHotel.Model.ApplicationUser", "Confirmer")
                         .WithMany("InvoiceReservations")
                         .HasForeignKey("ConfirmerId")
                         .IsRequired()
-                        .HasConstraintName("FKInvoiceRes286606");
+                        .HasConstraintName("FK_InvoiceReservation_AspNetUsers");
 
-                    b.HasOne("WebHotel.Model.Reservation", "Reservation")
+                    b.HasOne("WebHotel.Models.Reservation", "Reservation")
                         .WithMany("InvoiceReservations")
                         .HasForeignKey("ReservationId")
                         .IsRequired()
-                        .HasConstraintName("FKInvoiceRes190462");
+                        .HasConstraintName("FK_InvoiceReservation_Reservation");
 
                     b.Navigation("Confirmer");
 
                     b.Navigation("Reservation");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.OrderService", b =>
+            modelBuilder.Entity("WebHotel.Models.OrderService", b =>
                 {
-                    b.HasOne("WebHotel.Model.Reservation", "Reservation")
+                    b.HasOne("WebHotel.Models.Reservation", "Reservation")
                         .WithMany("OrderServices")
                         .HasForeignKey("ReservationId")
                         .IsRequired()
-                        .HasConstraintName("FKOrderServi258673");
+                        .HasConstraintName("FK_OrderService_Reservation");
 
-                    b.HasOne("WebHotel.Model.ServiceRoom", "ServiceRoom")
+                    b.HasOne("WebHotel.Models.ServiceRoom", "ServiceRoom")
                         .WithMany("OrderServices")
                         .HasForeignKey("ServiceRoomId")
                         .IsRequired()
-                        .HasConstraintName("FKOrderServi447170");
+                        .HasConstraintName("FK_OrderService_ServiceRoom");
 
                     b.HasOne("WebHotel.Model.ApplicationUser", "User")
                         .WithMany("OrderServices")
                         .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("FKOrderServi791508");
+                        .HasConstraintName("FK_OrderService_AspNetUsers");
 
                     b.Navigation("Reservation");
 
@@ -1081,90 +1088,90 @@ namespace WebHotel.Migrations
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Reservation", b =>
+            modelBuilder.Entity("WebHotel.Models.Reservation", b =>
                 {
-                    b.HasOne("WebHotel.Model.Room", "Room")
+                    b.HasOne("WebHotel.Models.Room", "Room")
                         .WithMany("Reservations")
                         .HasForeignKey("RoomId")
                         .IsRequired()
-                        .HasConstraintName("FKReservatio111598");
+                        .HasConstraintName("FK_Reservation_Room");
 
                     b.HasOne("WebHotel.Model.ApplicationUser", "User")
                         .WithMany("Reservations")
                         .HasForeignKey("UserId")
                         .IsRequired()
-                        .HasConstraintName("FKReservatio38059");
+                        .HasConstraintName("FK_Reservation_AspNetUsers");
 
                     b.Navigation("Room");
 
                     b.Navigation("User");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ReservationChat", b =>
+            modelBuilder.Entity("WebHotel.Models.ReservationChat", b =>
                 {
-                    b.HasOne("WebHotel.Model.Reservation", "Reservation")
+                    b.HasOne("WebHotel.Models.Reservation", "Reservation")
                         .WithMany("ReservationChats")
                         .HasForeignKey("ReservationId")
                         .IsRequired()
-                        .HasConstraintName("FKReservatio436575");
+                        .HasConstraintName("FK_ReservationChat_Reservation");
 
                     b.Navigation("Reservation");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ReservationStatusEvent", b =>
+            modelBuilder.Entity("WebHotel.Models.ReservationStatusEvent", b =>
                 {
-                    b.HasOne("WebHotel.Model.Reservation", "Reservation")
+                    b.HasOne("WebHotel.Models.Reservation", "Reservation")
                         .WithMany("ReservationStatusEvents")
                         .HasForeignKey("ReservationId")
                         .IsRequired()
-                        .HasConstraintName("FKReservatio37187");
+                        .HasConstraintName("FK_ReservationStatusEventsn_Reservation");
 
-                    b.HasOne("WebHotel.Model.ReservationStatus", "ReservationStatus")
+                    b.HasOne("WebHotel.Models.ReservationStatus", "ReservationStatus")
                         .WithMany("ReservationStatusEvents")
                         .HasForeignKey("ReservationStatusId")
                         .IsRequired()
-                        .HasConstraintName("FKReservatio956578");
+                        .HasConstraintName("FK_ReservationStatusEvents_ReservationStatus");
 
                     b.Navigation("Reservation");
 
                     b.Navigation("ReservationStatus");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Room", b =>
+            modelBuilder.Entity("WebHotel.Models.Room", b =>
                 {
-                    b.HasOne("WebHotel.Model.RoomType", "RoomType")
+                    b.HasOne("WebHotel.Models.RoomType", "RoomType")
                         .WithMany("Rooms")
                         .HasForeignKey("RoomTypeId")
                         .IsRequired()
-                        .HasConstraintName("FKRoom188940");
+                        .HasConstraintName("FK_Room_RoomType");
 
                     b.Navigation("RoomType");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.RoomStar", b =>
+            modelBuilder.Entity("WebHotel.Models.RoomStar", b =>
                 {
-                    b.HasOne("WebHotel.Model.Room", "Room")
-                        .WithMany("RoomStarts")
+                    b.HasOne("WebHotel.Models.Room", "Room")
+                        .WithMany("RoomStars")
                         .HasForeignKey("RoomId")
                         .IsRequired()
-                        .HasConstraintName("FKRoomStart413566");
+                        .HasConstraintName("FK_RoomStar_Room");
 
                     b.Navigation("Room");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ServiceAttachDetail", b =>
+            modelBuilder.Entity("WebHotel.Models.ServiceAttachDetail", b =>
                 {
-                    b.HasOne("WebHotel.Model.RoomType", "RoomType")
+                    b.HasOne("WebHotel.Models.RoomType", "RoomType")
                         .WithMany("ServiceAttachDetails")
                         .HasForeignKey("RoomTypeId")
                         .IsRequired()
-                        .HasConstraintName("FKServiceAtt405938");
+                        .HasConstraintName("FK_ServiceAttachDetail_RoomType");
 
-                    b.HasOne("WebHotel.Model.ServiceAttach", "ServiceAttach")
+                    b.HasOne("WebHotel.Models.ServiceAttach", "ServiceAttach")
                         .WithMany("ServiceAttachDetails")
                         .HasForeignKey("ServiceAttachId")
                         .IsRequired()
-                        .HasConstraintName("FKServiceAtt700016");
+                        .HasConstraintName("FK_ServiceAttachDetail_ServiceAttach");
 
                     b.Navigation("RoomType");
 
@@ -1188,7 +1195,7 @@ namespace WebHotel.Migrations
                     b.Navigation("Reservations");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Discount", b =>
+            modelBuilder.Entity("WebHotel.Models.Discount", b =>
                 {
                     b.Navigation("DiscountReservationDetails");
 
@@ -1197,12 +1204,12 @@ namespace WebHotel.Migrations
                     b.Navigation("DiscountServiceDetails");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.DiscountType", b =>
+            modelBuilder.Entity("WebHotel.Models.DiscountType", b =>
                 {
                     b.Navigation("Discounts");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Reservation", b =>
+            modelBuilder.Entity("WebHotel.Models.Reservation", b =>
                 {
                     b.Navigation("DiscountReservationDetails");
 
@@ -1215,33 +1222,33 @@ namespace WebHotel.Migrations
                     b.Navigation("ReservationStatusEvents");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ReservationStatus", b =>
+            modelBuilder.Entity("WebHotel.Models.ReservationStatus", b =>
                 {
                     b.Navigation("ReservationStatusEvents");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.Room", b =>
+            modelBuilder.Entity("WebHotel.Models.Room", b =>
                 {
                     b.Navigation("DiscountRoomDetails");
 
                     b.Navigation("Reservations");
 
-                    b.Navigation("RoomStarts");
+                    b.Navigation("RoomStars");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.RoomType", b =>
+            modelBuilder.Entity("WebHotel.Models.RoomType", b =>
                 {
                     b.Navigation("Rooms");
 
                     b.Navigation("ServiceAttachDetails");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ServiceAttach", b =>
+            modelBuilder.Entity("WebHotel.Models.ServiceAttach", b =>
                 {
                     b.Navigation("ServiceAttachDetails");
                 });
 
-            modelBuilder.Entity("WebHotel.Model.ServiceRoom", b =>
+            modelBuilder.Entity("WebHotel.Models.ServiceRoom", b =>
                 {
                     b.Navigation("DiscountServiceDetails");
 

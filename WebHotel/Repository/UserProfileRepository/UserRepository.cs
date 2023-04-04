@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Microsoft.AspNetCore.Identity;
+using System.Diagnostics.CodeAnalysis;
 using WebHotel.Data;
 using WebHotel.DTO;
 using WebHotel.DTO.UserDtos;
@@ -23,16 +24,17 @@ namespace WebHotel.Repository.UserProfileRepository
             _fileService = fileService;
         }
 
+        [return: MaybeNull]
         public UserProfileResponseDto GetUserProfile(string email)
         {
             var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == email);
-            if(user is not null)
+            if (user is not null)
             {
                 var userResponse = new UserProfileResponseDto();
                 _mapper.Map(user, userResponse);
                 return userResponse;
             }
-            return null;
+            return default;
         }
 
         public async Task<StatusDto> updateProfile(UserProfileRequestDto _user)
@@ -41,12 +43,12 @@ namespace WebHotel.Repository.UserProfileRepository
             if (user is not null)
             {
                 user = _mapper.Map(_user, user);
-                if(_user.Image is not null)
+                if (_user.Image is not null)
                 {
                     var checkSendFile = await _fileService.SendFile("ProfileUser/" + user.Email, _user.Image!);
                     if (checkSendFile)
                     {
-                        user.Image = await _fileService.GetFile("ProfileUser/" + user.Email +"/"+ _user.Image!.FileName);
+                        user.Image = await _fileService.GetFile("ProfileUser/" + user.Email + "/" + _user.Image!.FileName);
                     }
                     else
                     {

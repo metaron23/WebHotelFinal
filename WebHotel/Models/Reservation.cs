@@ -12,9 +12,9 @@ public partial class Reservation
 
     public decimal RoomPrice { get; set; }
 
-    public decimal DepositPrice { get; set; }
+    public decimal? DepositPrice { get; set; }
 
-    public DateTime DepositEndAt { get; set; }
+    public DateTime? DepositEndAt { get; set; }
 
     public byte[]? CreatedAt { get; set; }
 

@@ -6,7 +6,7 @@ using WebHotel.Models;
 
 namespace WebHotel.Repository.RoomRepository
 {
-    public class RoomRepository : IRoomRepository
+    public partial class RoomRepository : IRoomRepository
     {
         private readonly MyDBContext _context;
         private readonly IMapper _mapper;
@@ -17,7 +17,7 @@ namespace WebHotel.Repository.RoomRepository
             _mapper = mapper;
         }
 
-        public async Task checkDiscount(Room room)
+        public async Task CheckDiscount(Room room)
         {
             //_context.Rooms.Select(a => _context.DiscountRoomDetails)
             var discount = await _context.DiscountRoomDetails.Include(a => a.Discount)
@@ -28,14 +28,14 @@ namespace WebHotel.Repository.RoomRepository
             }
         }
 
-        public async Task<IEnumerable<RoomResponseDto>> getAll()
+        public async Task<IEnumerable<RoomResponseDto>> GetAll()
         {
             var roomBases = await _context.Rooms.Include(a => a.RoomType).AsNoTracking().ToListAsync();
             var roomResponse = new RoomResponseDto();
             var roomResponses = new List<RoomResponseDto>();
             foreach (var item in roomBases)
             {
-                await checkDiscount(item);
+                await CheckDiscount(item);
                 roomResponse = _mapper.Map<RoomResponseDto>(item);
                 roomResponse.RoomTypeName = item.RoomType.TypeName;
                 roomResponses.Add(roomResponse);
@@ -43,7 +43,7 @@ namespace WebHotel.Repository.RoomRepository
             return roomResponses;
         }
 
-        public async Task<IEnumerable<RoomResponseDto>> getAllBy(DateTime? checkIn, DateTime? checkOut, decimal? price, int? typeRoomId, float? star, int? peopleNumber)
+        public async Task<IEnumerable<RoomResponseDto>> GetAllBy(DateTime? checkIn, DateTime? checkOut, decimal? price, int? typeRoomId, float? star, int? peopleNumber)
         {
             var roomBasesQuery = _context.Rooms.Include(a => a.RoomType).AsNoTracking().AsQueryable();
             if (price != null)
@@ -67,7 +67,7 @@ namespace WebHotel.Repository.RoomRepository
             var roomBases = await roomBasesQuery.ToListAsync();
             foreach (var item in roomBases)
             {
-                await checkDiscount(item);
+                await CheckDiscount(item);
                 roomResponse = _mapper.Map<RoomResponseDto>(item);
                 roomResponse.RoomTypeName = item.RoomType.TypeName;
                 roomResponses.Add(roomResponse);
@@ -75,7 +75,7 @@ namespace WebHotel.Repository.RoomRepository
             return roomResponses;
         }
 
-        public RoomResponseDto getById(string id)
+        public RoomResponseDto GetById(string id)
         {
             throw new NotImplementedException();
         }

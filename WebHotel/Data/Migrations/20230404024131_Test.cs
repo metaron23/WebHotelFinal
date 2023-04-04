@@ -5,7 +5,7 @@
 namespace WebHotel.Data.Migrations
 {
     /// <inheritdoc />
-    public partial class update_id_guid4 : Migration
+    public partial class Test : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)

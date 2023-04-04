@@ -5,7 +5,7 @@ namespace WebHotel.Controllers
 {
     [Route("api/[controller]/[Action]")]
     [ApiController]
-    public class RoomController : ControllerBase
+    public partial class RoomController : ControllerBase
     {
         private readonly IRoomRepository _roomRepository;
         public RoomController(IRoomRepository roomRepository)
@@ -14,16 +14,16 @@ namespace WebHotel.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> getAll()
+        public async Task<IActionResult> GetAll()
         {
-            var result = await _roomRepository.getAll();
+            var result = await _roomRepository.GetAll();
             return Ok(result);
         }
 
         [HttpGet]
         public async Task<IActionResult> getAllBy(DateTime? checkIn, DateTime? checkOut, decimal? price, int? typeRoomId, float? star, int? peopleNumber)
         {
-            var result = await _roomRepository.getAllBy(checkIn, checkOut, price, typeRoomId, star, peopleNumber);
+            var result = await _roomRepository.GetAllBy(checkIn, checkOut, price, typeRoomId, star, peopleNumber);
             return Ok(result);
         }
     }
