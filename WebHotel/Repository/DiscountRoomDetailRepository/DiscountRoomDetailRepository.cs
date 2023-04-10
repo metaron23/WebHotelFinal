@@ -16,9 +16,9 @@ namespace WebHotel.Repository.DiscountRoomDetailRepository
             _context = context;
             _mapper = mapper;
         }
-        public async Task<StatusDto> Create(DiscountRoomDetailRequest discountRoomDetailRequest)
+        public async Task<StatusDto> Create(DiscountRoomDetailRequest discountRoomDetailRequest, string email)
         {
-            var user = _context.ApplicationUsers.SingleOrDefault(a => a.UserName == discountRoomDetailRequest.CreatorUserName);
+            var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == email);
             if (user != null)
             {
                 var discountDetail = _mapper.Map<DiscountRoomDetail>(discountRoomDetailRequest);

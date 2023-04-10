@@ -5,7 +5,7 @@ namespace WebHotel.Repository.UserProfileRepository
 {
     public interface IUserRepository
     {
-        Task<StatusDto> updateProfile(UserProfileRequestDto user);
-        UserProfileResponseDto GetUserProfile(string email);
+        Task<StatusDto> Update(UserProfileRequestDto user, string? email);
+        UserProfileResponseDto Get(string? email);
     }
 }

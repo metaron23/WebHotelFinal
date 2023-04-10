@@ -23,6 +23,9 @@ namespace WebHotel.Repository.RoomStarRepository
             if (room is not null)
             {
                 await _context.AddAsync(_mapper.Map<RoomStar>(roomStarRequestDto));
+                room.StarValue += roomStarRequestDto.Number;
+                room.StarAmount++;
+                room.StarSum = room.StarValue / room.StarAmount;
                 await _context.SaveChangesAsync();
                 return new StatusDto { StatusCode = 1, Message = "Successful comment!" };
             }

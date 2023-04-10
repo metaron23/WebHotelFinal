@@ -4,6 +4,7 @@ namespace WebHotel.DTO.RoomDtos
 {
     public class RoomResponseDto
     {
+        public string Id { get; set; } = null!;
         public string RoomNumber { get; set; } = null!;
 
         public string Name { get; set; } = null!;
@@ -18,7 +19,9 @@ namespace WebHotel.DTO.RoomDtos
 
         public float? StarSum { get; set; }
 
-        public int? GuestNumber { get; set; }
+        public int PeopleNumber { get; set; }
+
+        public int NumberOfBed { get; set; }
 
         public decimal CurrentPrice { get; set; }
 

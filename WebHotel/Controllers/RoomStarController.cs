@@ -4,7 +4,6 @@ using WebHotel.Repository.RoomStarRepository;
 
 namespace WebHotel.Controllers
 {
-    [Route("api/[controller]/[action]")]
     [ApiController]
     public class RoomStarController : ControllerBase
     {
@@ -16,6 +15,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
+        [Route("user/room-star/create")]
         public async Task<IActionResult> Create(RoomStarRequestDto roomStarRequestDto)
         {
             var result = await _roomStarRepository.Create(roomStarRequestDto);

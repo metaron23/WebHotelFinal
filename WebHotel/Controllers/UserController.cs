@@ -3,12 +3,12 @@ using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 using WebHotel.DTO.UserDtos;
 using WebHotel.Repository.UserProfileRepository;
+using WebHotel.Service.FileService;
 
 namespace WebHotel.Controllers;
 
-[Route("api/[controller]/[action]")]
 [ApiController]
-[Authorize]
+[Authorize(Roles = "User")]
 public class UserController : ControllerBase
 {
     private readonly IUserRepository _userRepository;
@@ -18,60 +18,59 @@ public class UserController : ControllerBase
         _userRepository = userRepository;
     }
 
-    //[HttpPost]
-    //[AllowAnonymous]
-    //public async Task<IActionResult> SendFile(string urlFile, IFormFile formFile)
-    //{
-    //    FileService a = new FileService();
-    //    await a.SendFile(urlFile, formFile);
-    //    return Ok();
-    //}
-
-    //[HttpGet]
-    //[AllowAnonymous]
-    //public async Task<IActionResult> deleteFile(string urlFile)
-    //{
-    //    FileService a = new FileService();
-    //    await a.deleteFile(urlFile);
-    //    return Ok();
-    //}
-
-    //[HttpGet]
-    //[AllowAnonymous]
-    //public async Task<IActionResult> GetFile(string fileName)
-    //{
-    //    FileService a = new FileService();
-    //    var response = await a.GetFile(fileName);
-    //    return Ok(response);
-    //}
-
     [HttpPost]
-    public async Task<IActionResult> UpdateProfile([FromForm] UserProfileRequestDto _user)
+    [AllowAnonymous]
+    [Route("/user/send-file")]
+    public async Task<IActionResult> SendFile(string urlFile, IFormFile formFile)
     {
-        if (ModelState.IsValid)
-        {
-            var emailLogin = User.FindFirst(ClaimTypes.Email)!.Value;
-            if (emailLogin == _user.Email)
-            {
-                var status = await _userRepository.updateProfile(_user);
-                if (status.StatusCode == 1)
-                {
-                    return Ok(status);
-                }
-                else
-                {
-                    return BadRequest(status);
-                }
-            }
-        }
-        return BadRequest();
+        FileService a = new FileService();
+        await a.SendFile(urlFile, formFile);
+        return Ok();
     }
 
     [HttpGet]
-    public IActionResult GetUserProfile()
+    [AllowAnonymous]
+    [Route("/user/delete-file")]
+    public async Task<IActionResult> deleteFile(string urlFile)
+    {
+        FileService a = new FileService();
+        await a.deleteFile(urlFile);
+        return Ok();
+    }
+
+    [HttpGet]
+    [AllowAnonymous]
+    [Route("/user/get-file")]
+    public async Task<IActionResult> GetFile(string fileName)
+    {
+        FileService a = new FileService();
+        var response = await a.GetFile(fileName);
+        return Ok(response);
+    }
+
+    [HttpPost]
+    [Route("/user/user-profile/update")]
+    public async Task<IActionResult> Update([FromForm] UserProfileRequestDto _user)
+    {
+        var emailLogin = User.FindFirst(ClaimTypes.Email)!.Value;
+
+        var status = await _userRepository.Update(_user, emailLogin);
+        if (status.StatusCode == 1)
+        {
+            return Ok(status);
+        }
+        else
+        {
+            return BadRequest(status);
+        }
+    }
+
+    [HttpGet]
+    [Route("/user/user-profile/get")]
+    public IActionResult Get()
     {
         var email = User.FindFirst(ClaimTypes.Email)!.Value;
-        var result = _userRepository.GetUserProfile(email);
+        var result = _userRepository.Get(email);
         if (result is null)
         {
             return NotFound();

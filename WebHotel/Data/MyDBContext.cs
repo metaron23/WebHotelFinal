@@ -57,6 +57,7 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.HasKey(e => e.Id);
             entity.Property(e => e.Image).HasMaxLength(450);
             entity.Property(e => e.CreatedAt).IsRowVersion().IsConcurrencyToken().HasDefaultValueSql("GetDate()");
+            entity.Property(e => e.Name).IsRequired(false);
         });
         modelBuilder.Entity<Discount>(entity =>
         {
@@ -235,12 +236,12 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
             entity.Property(e => e.Id)
                 .HasMaxLength(255)
-                .HasDefaultValueSql("('newid()')");
+                .HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt)
                 .IsRowVersion()
                 .IsConcurrencyToken();
+            entity.Property(e => e.NumberOfDay).HasDefaultValueSql("1.0");
             entity.Property(e => e.DepositEndAt).HasColumnType("datetime");
-            entity.Property(e => e.DepositPrice).HasColumnType("decimal(19, 2)");
             entity.Property(e => e.EndDate).HasColumnType("datetime");
             entity.Property(e => e.ReservationPrice).HasColumnType("decimal(19, 2)");
             entity.Property(e => e.RoomId).HasMaxLength(255);
@@ -319,14 +320,14 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
 
             entity.Property(e => e.Id)
                 .HasMaxLength(255)
-                .HasDefaultValueSql("('newid()')");
+                .HasDefaultValueSql("(newid())");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("datetime");
             entity.Property(e => e.CurrentPrice).HasColumnType("decimal(12, 2)");
             entity.Property(e => e.Description).HasColumnType("ntext");
             entity.Property(e => e.DiscountPrice).HasColumnType("decimal(19, 2)");
-            entity.Property(e => e.GuestNumber).HasDefaultValueSql("((1))");
+            entity.Property(e => e.PeopleNumber).HasDefaultValueSql("((1))");
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValueSql("('true')");
@@ -337,9 +338,9 @@ public partial class MyDBContext : IdentityDbContext<ApplicationUser>
             entity.Property(e => e.RoomPicture)
                 .HasMaxLength(255)
                 .IsUnicode(false);
-            entity.Property(e => e.StarAmount).HasDefaultValueSql("((1))");
-            entity.Property(e => e.StarSum).HasDefaultValueSql("((1))");
-            entity.Property(e => e.StarValue).HasDefaultValueSql("((1))");
+            entity.Property(e => e.StarAmount).HasDefaultValueSql("((0))");
+            entity.Property(e => e.StarSum).HasDefaultValueSql("((0))");
+            entity.Property(e => e.StarValue).HasDefaultValueSql("((0))");
             entity.Property(e => e.UpdatedAt)
                 .IsRowVersion()
                 .IsConcurrencyToken();

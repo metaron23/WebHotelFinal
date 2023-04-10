@@ -8,11 +8,11 @@ public partial class Reservation
 
     public DateTime StartDate { get; set; }
 
+    public float NumberOfDay { get; set; }
+
     public DateTime EndDate { get; set; }
 
     public decimal RoomPrice { get; set; }
-
-    public decimal? DepositPrice { get; set; }
 
     public DateTime? DepositEndAt { get; set; }
 

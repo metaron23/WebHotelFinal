@@ -14,7 +14,7 @@ namespace WebHotel.Repository.EmailRepository
         {
             _configuration = configuration;
         }
-        public bool Email(EmailRequestDto mailRequest)
+        public bool SendMail(EmailRequestDto mailRequest)
         {
             var check = true;
             var email = new MimeMessage();

@@ -25,7 +25,7 @@ namespace WebHotel.Repository.UserProfileRepository
         }
 
         [return: MaybeNull]
-        public UserProfileResponseDto GetUserProfile(string email)
+        public UserProfileResponseDto Get(string? email)
         {
             var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == email);
             if (user is not null)
@@ -37,14 +37,16 @@ namespace WebHotel.Repository.UserProfileRepository
             return default;
         }
 
-        public async Task<StatusDto> updateProfile(UserProfileRequestDto _user)
+        public async Task<StatusDto> Update(UserProfileRequestDto _user, string? email)
         {
-            var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == _user.Email);
+            var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == email);
             if (user is not null)
             {
+                string urlImg = user.Image!;
                 user = _mapper.Map(_user, user);
                 if (_user.Image is not null)
                 {
+                    await _fileService.deleteFile("ProfileUser/" + user.Email);
                     var checkSendFile = await _fileService.SendFile("ProfileUser/" + user.Email, _user.Image!);
                     if (checkSendFile)
                     {
@@ -54,6 +56,10 @@ namespace WebHotel.Repository.UserProfileRepository
                     {
                         return new StatusDto { StatusCode = 0, Message = "Save image failed!" };
                     }
+                }
+                else
+                {
+                    user.Image = urlImg;
                 }
                 try
                 {

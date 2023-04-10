@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.EntityFrameworkCore;
 using WebHotel.Data;
 using WebHotel.DTO;
 using WebHotel.DTO.DiscountDtos;
@@ -17,9 +18,9 @@ namespace WebHotel.Repository.DiscountRepository
             _mapper = mapper;
         }
 
-        public async Task<StatusDto> Create(DiscountRequestDto discountRequestDto)
+        public async Task<StatusDto> Create(DiscountRequestDto discountRequestDto, string email)
         {
-            var user = _context.ApplicationUsers.SingleOrDefault(a => a.UserName == discountRequestDto.CreatorUserName);
+            var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == email);
             if (user != null)
             {
                 var discount = _mapper.Map<Discount>(discountRequestDto);
@@ -30,9 +31,12 @@ namespace WebHotel.Repository.DiscountRepository
                     await _context.SaveChangesAsync();
                     return new StatusDto { StatusCode = 1, Message = "Created successfully" };
                 }
-                catch { }
+                catch (DbUpdateException ex)
+                {
+                    return new StatusDto { StatusCode = 0, Message = ex.InnerException?.Message };
+                }
             }
-            return new StatusDto { StatusCode = 0, Message = "Create discount error" };
+            return new StatusDto { StatusCode = 0, Message = "Create discount error! Creator not found" };
         }
     }
 }

@@ -1,13 +1,12 @@
-﻿using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using WebHotel.DTO;
 using WebHotel.DTO.Authentication;
+using WebHotel.DTO.AuthenticationDtos;
 using WebHotel.Repository.AuthenRepository;
 using WebHotel.Repository.EmailRepository;
 
 namespace WebHotel.Controllers
 {
-    [Route("api/[controller]/[action]")]
     [ApiController]
     public class AuthenController : ControllerBase
     {
@@ -28,6 +27,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
+        [Route("/user/login")]
         public async Task<IActionResult> Login([FromBody] LoginDto model)
         {
             var result = await _authenRepository.Login(model);
@@ -42,7 +42,8 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> Registration([FromBody] RegistrationDto model)
+        [Route("/user/register")]
+        public async Task<IActionResult> Registration([FromBody] RegisterDto model)
         {
             StatusDto result = await _authenRepository.Registration(model);
             if (result.StatusCode == 1)
@@ -53,8 +54,8 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
-        [Authorize(Roles = "Admin")]
-        public async Task<IActionResult> RegistrationAdmin([FromBody] RegistrationDto model)
+        [Route("/admin/register")]
+        public async Task<IActionResult> RegistrationAdmin([FromBody] RegisterAdminDto model)
         {
             StatusDto result = await _authenRepository.RegistrationAdmin(model);
             if (result.StatusCode == 1)
@@ -65,6 +66,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpGet]
+        [Route("/user/request-reset-password")]
         public async Task<IActionResult> RequestResetPassword(string? email)
         {
             var status = await _authenRepository.RequestResetPassword(email);
@@ -77,12 +79,14 @@ namespace WebHotel.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> ConfirmEmailRegiste(string email, string code)
+        [Route("/user/confirm-email-register")]
+        public async Task<IActionResult> ConfirmEmailRegister(string email, string code)
         {
-            return Ok(await _authenRepository.ConfirmEmailRegiste(email, code));
+            return Ok(await _authenRepository.ConfirmEmailRegister(email, code));
         }
 
         [HttpPost]
+        [Route("/user/request-change-password")]
         public async Task<IActionResult> RequestChangePassword(ForgotPasswordDto forgotPasswordModel)
         {
             var status = await _authenRepository.RequestChangePassword(forgotPasswordModel);
@@ -93,6 +97,7 @@ namespace WebHotel.Controllers
             return BadRequest(status);
         }
         [HttpPost]
+        [Route("/user/confirm-change-password")]
         public async Task<IActionResult> ConfirmChangePassword(ResetPasswordDto resetPasswordModel)
         {
             var status = await _authenRepository.ConfirmChangePassword(resetPasswordModel);

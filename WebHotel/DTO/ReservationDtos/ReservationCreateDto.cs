@@ -1,13 +1,19 @@
-﻿namespace WebHotel.DTO.ReservationDtos
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace WebHotel.DTO.ReservationDtos
 {
     public class ReservationCreateDto
     {
-        public DateTime StartDate { get; set; }
+        [Required(ErrorMessage = "{0} is required")]
+        public DateTime? StartDate { get; set; }
 
-        public DateTime EndDate { get; set; }
+        [Required(ErrorMessage = "{0} is required")]
+        public DateTime? EndDate { get; set; }
 
-        public string RoomId { get; set; } = null!;
+        [Required(ErrorMessage = "{0} is required")]
+        public string? RoomId { get; set; }
 
-        public string CustomerUserName { get; set; } = null!;
+        [Required(ErrorMessage = "{0} is required")]
+        public float? NumberOfDay { get; set; }
     }
 }

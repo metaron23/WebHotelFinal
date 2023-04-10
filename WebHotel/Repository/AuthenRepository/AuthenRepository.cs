@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.WebUtilities;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.JsonWebTokens;
 using System.Security.Claims;
 using System.Web;
@@ -8,6 +9,7 @@ using WebHotel.Commom;
 using WebHotel.Data;
 using WebHotel.DTO;
 using WebHotel.DTO.Authentication;
+using WebHotel.DTO.AuthenticationDtos;
 using WebHotel.Model;
 using WebHotel.Models;
 using WebHotel.Repository.EmailRepository;
@@ -45,11 +47,11 @@ namespace WebHotel.Repository.AuthenRepository
 
         public async Task<object> Login([FromBody] LoginDto model)
         {
-            var user = await _userManager.FindByEmailAsync(model.Email!);
+            var user = _context.ApplicationUsers.SingleOrDefault(a => a.Email == model.Email || a.UserName == model.Email);
 
             if (user != null)
             {
-                if (user.LockoutEnd >= DateTime.Now)
+                if (user.LockoutEnd >= DateTime.UtcNow)
                 {
                     return
                     new StatusDto
@@ -58,22 +60,22 @@ namespace WebHotel.Repository.AuthenRepository
                         Message = "Tài khoản đã bị khoá vì nhập sai 3 lần! Thời gian mở khoá là: " + user.LockoutEnd.Value.AddHours(7),
                     };
                 }
-                var check = await _signInManager.CheckPasswordSignInAsync(user, model.Password!, true);
+                var check = await _signInManager.PasswordSignInAsync(user, model.Password!, false, true);
 
                 if (check.Succeeded)
                 {
                     var userRoles = await _userManager.GetRolesAsync(user);
 
                     var authClaims = new List<Claim>
-                {
+                    {
                     new Claim(ClaimTypes.Name, user.UserName!),
                     new Claim(ClaimTypes.Email, user.Email!),
                     new Claim(JwtRegisteredClaimNames.Jti, Guid.NewGuid().ToString()),
-                };
+                    };
 
                     foreach (var userRole in userRoles)
                     {
-                        authClaims.Add(new Claim("Roles", userRole));
+                        authClaims.Add(new Claim(ClaimTypes.Role, userRole));
                     }
 
                     var token = _tokenService.GetAccessToken(authClaims);
@@ -88,7 +90,7 @@ namespace WebHotel.Repository.AuthenRepository
                             RefreshToken = refreshToken,
                             RefreshTokenExpiry = DateTime.Now.AddDays(1)
                         };
-                        _context.TokenInfos.Add(info);
+                        await _context.TokenInfos.AddAsync(info);
                     }
                     else
                     {
@@ -97,7 +99,7 @@ namespace WebHotel.Repository.AuthenRepository
                     }
                     try
                     {
-                        _context.SaveChanges();
+                        await _context.SaveChangesAsync();
                     }
                     catch (Exception ex)
                     {
@@ -114,19 +116,15 @@ namespace WebHotel.Repository.AuthenRepository
                         RefreshToken = refreshToken,
                     };
                 }
-                else
-                {
-                    await _userManager.AccessFailedAsync(user);
-                }
             }
             return new StatusDto
             {
                 StatusCode = 0,
-                Message = "Sai email hoặc mật khẩu!",
+                Message = "Sai tài khoản hoặc mật khẩu!",
             };
         }
 
-        public async Task<StatusDto> Registration([FromBody] RegistrationDto model)
+        public async Task<StatusDto> Registration([FromBody] RegisterDto model)
         {
             var status = new StatusDto();
             if (!ModelState.IsValid)
@@ -186,9 +184,9 @@ namespace WebHotel.Repository.AuthenRepository
                 {"code", code }
 
             };
-            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"]!.ToString() + "/api/Authen/ConfirmEmailRegiste", param);
+            string callBack = QueryHelpers.AddQueryString(_configuration["URL_HOST"]!.ToString() + "/user/confirm-email-register", param);
 
-            if (_mailRepository.Email(new EmailRequestDto
+            if (_mailRepository.SendMail(new EmailRequestDto
             {
                 To = user.Email,
                 Subject = "Mail confim registed",
@@ -207,7 +205,7 @@ namespace WebHotel.Repository.AuthenRepository
             return status;
         }
 
-        public async Task<bool> ConfirmEmailRegiste(string email, string code)
+        public async Task<bool> ConfirmEmailRegister(string email, string code)
         {
             var user = await _userManager.FindByEmailAsync(email);
             if (user == null)
@@ -218,21 +216,14 @@ namespace WebHotel.Repository.AuthenRepository
 
 
 
-        public async Task<StatusDto> RegistrationAdmin([FromBody] RegistrationDto model)
+        public async Task<StatusDto> RegistrationAdmin([FromBody] RegisterAdminDto model)
         {
             var status = new StatusDto();
-            if (!ModelState.IsValid)
-            {
-                status.StatusCode = 0;
-                status.Message = "Please pass all the required fields";
-                return status;
-            }
-            // check if user exists
-            var userExists = await _userManager.FindByNameAsync(model.UserName!);
+            var userExists = _context.ApplicationUsers.AsNoTracking().Where(a => a.Email == model.Email || a.UserName == model.UserName).SingleOrDefault();
             if (userExists != null)
             {
                 status.StatusCode = 0;
-                status.Message = "Invalid username";
+                status.Message = "Invalid email or username";
                 return status;
             }
             var user = new ApplicationUser
@@ -240,14 +231,14 @@ namespace WebHotel.Repository.AuthenRepository
                 UserName = model.UserName,
                 SecurityStamp = Guid.NewGuid().ToString(),
                 Email = model.Email,
-                Name = model.Name!,
+                EmailConfirmed = true
             };
             // create a user here
             var result = await _userManager.CreateAsync(user, model.Password!);
             if (!result.Succeeded)
             {
                 status.StatusCode = 0;
-                status.Message = "User creation failed";
+                status.Message = "Admin creation failed";
                 return status;
             }
 
@@ -280,7 +271,7 @@ namespace WebHotel.Repository.AuthenRepository
 
                 if (check.Succeeded)
                 {
-                    _mailRepository.Email(new EmailRequestDto
+                    _mailRepository.SendMail(new EmailRequestDto
                     {
                         To = user.Email,
                         Subject = "Mail reset mật khẩu tài khoản!",
@@ -315,7 +306,7 @@ namespace WebHotel.Repository.AuthenRepository
                 {"email", forgotPasswordModel.Email }
             };
             var callBack = QueryHelpers.AddQueryString(forgotPasswordModel.ClientURI!, param);
-            _mailRepository.Email(new EmailRequestDto
+            _mailRepository.SendMail(new EmailRequestDto
             {
                 To = user.Email,
                 Subject = "Mail confim change pass",

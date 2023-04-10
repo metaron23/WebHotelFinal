@@ -14,10 +14,15 @@ namespace WebHotel.DTO.RoomDtos
 
         public string? Description { get; set; }
 
-        public string? RoomPicture { get; set; }
+        public decimal CurrentPrice { get; set; }
+
+        public IFormFile? RoomPicture { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
-        public int GuestNumber { get; set; }
+        public int PeopleNumber { get; set; }
+
+        [Required(ErrorMessage = "{0} is required")]
+        public int NumberOfBed { get; set; }
 
         [Required(ErrorMessage = "{0} is required")]
         public int RoomTypeId { get; set; }

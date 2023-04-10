@@ -12,7 +12,7 @@ builder.Services.AddCors(options =>
     options.AddPolicy(name: MyAllowSpecificOrigins,
         policy =>
         {
-            policy.WithOrigins("http://localhost:4200")
+            policy.WithOrigins("http://localhost:4200", "http://webhotelangular.s3-website.ap-south-1.amazonaws.com")
             .AllowAnyMethod()
             .AllowAnyHeader()
             .AllowCredentials();

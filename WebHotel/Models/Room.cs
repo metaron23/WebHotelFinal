@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace WebHotel.Models;
+﻿namespace WebHotel.Models;
 
 public partial class Room
 {
@@ -19,7 +16,9 @@ public partial class Room
 
     public int? StarSum { get; set; }
 
-    public int GuestNumber { get; set; }
+    public int PeopleNumber { get; set; }
+
+    public int NumberOfBed { get; set; }
 
     public decimal CurrentPrice { get; set; }
 

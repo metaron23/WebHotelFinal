@@ -5,6 +5,6 @@ namespace WebHotel.Repository.ReservationRepository
 {
     public interface IReservationRepository
     {
-        Task<StatusDto> Create(ReservationCreateDto reservationCreateDto);
+        Task<StatusDto> Create(ReservationCreateDto reservationCreateDto, string email);
     }
 }

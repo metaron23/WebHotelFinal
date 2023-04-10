@@ -17,38 +17,40 @@ namespace WebHotel.Repository.ReservationRepository
             _context = context;
             _mapper = mapper;
         }
-        public async Task<StatusDto> Create(ReservationCreateDto reservationCreateDto)
+        public async Task<StatusDto> Create(ReservationCreateDto reservationCreateDto, string email)
         {
-            var room = _context.Rooms.AsNoTracking().SingleOrDefault(a => a.Id == reservationCreateDto.RoomId)!;
-            var user = _context.Users.AsNoTracking().SingleOrDefault(a => a.UserName == reservationCreateDto.CustomerUserName);
-            if (room is not null || user is not null)
+            var reservationExists = _context.Reservations.Where(a => a.EndDate < reservationCreateDto.EndDate).Where(a => a.StartDate > reservationCreateDto.EndDate);
+            if (reservationExists is null)
             {
-                var reservation = _mapper.Map<Reservation>(reservationCreateDto);
-                reservation.RoomPrice = room!.CurrentPrice;
-                if (room.DiscountPrice == 0)
-                {
-                    reservation.ReservationPrice = (decimal)room.DiscountPrice;
-                }
-                else
-                {
-                    reservation.ReservationPrice = (decimal)room.CurrentPrice;
-                }
-                //reservation.DepositPrice = reservation.ReservationPrice * (decimal)0.3;
-                //var timeSpan = (reservation.StartDate - DateTime.Now).TotalMinutes;
-                //if(timeSpan > 60)
-                //{
-                //    reservation.DepositEndAt = DateTime.Now.AddMinutes(30);
-                //}
-                //else
-                //{
+                var room = _context.Rooms.AsNoTracking().SingleOrDefault(a => a.Id == reservationCreateDto.RoomId)!;
 
-                //}
-                reservation.ReservationPrice = (decimal)(room.DiscountPrice == 0 ? 0 : room.DiscountPrice)!;
-                await _context.Reservations.AddAsync(reservation);
-                await _context.SaveChangesAsync();
-                return new StatusDto { StatusCode = 1, Message = "Successful booking" };
+                var user = _context.Users.AsNoTracking().SingleOrDefault(a => a.Email == email)!;
+
+                if (room is not null || user is not null)
+                {
+                    var reservation = _mapper.Map<Reservation>(reservationCreateDto);
+
+                    reservation.UserId = user.Id;
+
+                    reservation.RoomPrice = (decimal)(room!.DiscountPrice == null ? room.CurrentPrice : room.DiscountPrice)!;
+
+                    var startDate = reservationCreateDto.StartDate!.Value;
+
+                    reservation.StartDate = new DateTime(startDate.Year, startDate.Month, startDate.Day, 5, 00, 00);
+
+                    reservation.EndDate = reservation.StartDate.AddDays((double)reservationCreateDto.NumberOfDay!);
+
+                    reservation.DepositEndAt = startDate.AddHours(1);
+
+                    reservation.ReservationPrice = reservation.RoomPrice * (decimal)reservation.NumberOfDay;
+
+                    await _context.Reservations.AddAsync(reservation);
+                    await _context.SaveChangesAsync();
+                    return new StatusDto { StatusCode = 1, Message = "Successful booking" };
+                }
+                return new StatusDto { StatusCode = 0, Message = "Booking failed" };
             }
-            return new StatusDto { StatusCode = 0, Message = "Booking failed" };
+            return new StatusDto { StatusCode = 0, Message = "Room is Booked" };
         }
     }
 }

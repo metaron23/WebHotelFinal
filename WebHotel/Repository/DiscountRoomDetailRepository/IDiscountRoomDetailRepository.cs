@@ -5,6 +5,6 @@ namespace WebHotel.Repository.DiscountRoomDetailRepository
 {
     public interface IDiscountRoomDetailRepository
     {
-        Task<StatusDto> Create(DiscountRoomDetailRequest discountRoomDetailRequest);
+        Task<StatusDto> Create(DiscountRoomDetailRequest discountRoomDetailRequest, string email);
     }
 }

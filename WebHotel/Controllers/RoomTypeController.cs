@@ -14,8 +14,9 @@ namespace WebHotel.Controllers
         {
             _roomTypeRepository = roomTypeRepository;
         }
-        // GET: api/<RoomTypeController>
+
         [HttpGet]
+        [Route("/room-type/get")]
         public IEnumerable<string> Get()
         {
             return new string[] { "value1", "value2" };
@@ -29,6 +30,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
+        [Route("/room-type/create")]
         public async Task<IActionResult> Create([FromBody] RoomTypeCreateDto roomTypeCreateDto)
         {
             var result = await _roomTypeRepository.Create(roomTypeCreateDto);

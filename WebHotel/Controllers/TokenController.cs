@@ -5,7 +5,6 @@ using WebHotel.Service.TokenRepository;
 
 namespace WebHotel.Controllers
 {
-    [Route("api/[controller]/[action]")]
     [ApiController]
     public class TokenController : ControllerBase
     {
@@ -17,6 +16,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
+        [Route("user/token/refresh")]
         public IActionResult Refresh(TokenRequestDto tokenRequest)
         {
             var token = _service.RefreshToken(tokenRequest);
@@ -28,6 +28,7 @@ namespace WebHotel.Controllers
         }
 
         [HttpPost]
+        [Route("user/token/revoke")]
         public IActionResult Revoke(TokenRequestDto tokenRequest)
         {
             bool check = _service.Revoke(tokenRequest);

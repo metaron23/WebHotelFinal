@@ -8,7 +8,7 @@ using WebHotel.Data;
 
 #nullable disable
 
-namespace WebHotel.Data.Migrations
+namespace WebHotel.data.migrations
 {
     [DbContext(typeof(MyDBContext))]
     partial class MyDBContextModelSnapshot : ModelSnapshot
@@ -197,7 +197,6 @@ namespace WebHotel.Data.Migrations
                         .HasColumnType("datetimeoffset");
 
                     b.Property<string>("Name")
-                        .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("NormalizedEmail")
@@ -511,7 +510,7 @@ namespace WebHotel.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasDefaultValueSql("('newid()')");
+                        .HasDefaultValueSql("(newid())");
 
                     b.Property<byte[]>("CreatedAt")
                         .IsConcurrencyToken()
@@ -521,11 +520,13 @@ namespace WebHotel.Data.Migrations
                     b.Property<DateTime?>("DepositEndAt")
                         .HasColumnType("datetime");
 
-                    b.Property<decimal?>("DepositPrice")
-                        .HasColumnType("decimal(19, 2)");
-
                     b.Property<DateTime>("EndDate")
                         .HasColumnType("datetime");
+
+                    b.Property<float>("NumberOfDay")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("real")
+                        .HasDefaultValueSql("1.0");
 
                     b.Property<decimal>("ReservationPrice")
                         .HasColumnType("decimal(19, 2)");
@@ -658,7 +659,7 @@ namespace WebHotel.Data.Migrations
                         .ValueGeneratedOnAdd()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)")
-                        .HasDefaultValueSql("('newid()')");
+                        .HasDefaultValueSql("(newid())");
 
                     b.Property<DateTime?>("CreatedAt")
                         .ValueGeneratedOnAdd()
@@ -674,11 +675,6 @@ namespace WebHotel.Data.Migrations
                     b.Property<decimal?>("DiscountPrice")
                         .HasColumnType("decimal(19, 2)");
 
-                    b.Property<int>("GuestNumber")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
-
                     b.Property<bool?>("IsActive")
                         .IsRequired()
                         .ValueGeneratedOnAdd()
@@ -689,6 +685,14 @@ namespace WebHotel.Data.Migrations
                         .IsRequired()
                         .HasMaxLength(255)
                         .HasColumnType("nvarchar(255)");
+
+                    b.Property<int>("NumberOfBed")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PeopleNumber")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int")
+                        .HasDefaultValueSql("((1))");
 
                     b.Property<string>("RoomNumber")
                         .IsRequired()
@@ -707,17 +711,17 @@ namespace WebHotel.Data.Migrations
                     b.Property<int?>("StarAmount")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("StarSum")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValueSql("((0))");
 
                     b.Property<int?>("StarValue")
                         .ValueGeneratedOnAdd()
                         .HasColumnType("int")
-                        .HasDefaultValueSql("((1))");
+                        .HasDefaultValueSql("((0))");
 
                     b.Property<byte[]>("UpdatedAt")
                         .IsConcurrencyToken()
@@ -794,6 +798,10 @@ namespace WebHotel.Data.Migrations
 
                     b.Property<string>("Description")
                         .HasColumnType("ntext");
+
+                    b.Property<string>("Icon")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Name")
                         .IsRequired()

@@ -14,8 +14,6 @@
 
         public bool? IsPermanent { get; set; }
 
-        public string? CreatorUserName { get; set; }
-
         public int DiscountTypeId { get; set; }
     }
 }
